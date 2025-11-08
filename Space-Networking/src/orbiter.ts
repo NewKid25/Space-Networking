@@ -1,4 +1,4 @@
-import Position from './position.ts'
+import Position from './position'
 
 const DISTANCE_FROM_SUN: Map<string, number> = new Map([
     ["Mercury", 58*10^6],
