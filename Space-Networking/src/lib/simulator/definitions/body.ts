@@ -5,7 +5,7 @@ class Body {
     id: number;
     name: string;
     pos: Array<Position>;
-    sender: Sender = null;
+    sender?: Sender = undefined;
 
     constructor(id: number, name: string, p: Array<Position>) {
             this.id = id;
@@ -17,14 +17,14 @@ class Body {
     {
         if (x==true)
         {
-            if (this.sender == null) //this body does not have sender
+            if (this.sender == undefined) //this body does not have sender
             {
                 this.sender = new Sender()
             }
         }
         else
         {
-            this.sender = null;
+            this.sender = undefined;
         }
     }
 }

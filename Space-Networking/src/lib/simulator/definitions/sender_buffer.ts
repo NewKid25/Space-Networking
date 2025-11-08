@@ -5,7 +5,10 @@ class Sender_Buffer{
     constructor(data:number[]);
     constructor(data?:number[])
     {
-        this.data = data
+        if(data)
+        {
+            this.data = data
+        }
     }
     
 }  
