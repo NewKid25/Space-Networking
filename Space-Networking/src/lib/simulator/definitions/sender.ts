@@ -7,3 +7,5 @@ class Sender {
         this.buffer = x;
     }
 }
+
+export default Sender
