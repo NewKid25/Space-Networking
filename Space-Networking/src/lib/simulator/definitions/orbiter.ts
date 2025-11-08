@@ -1,14 +1,14 @@
 import Position from './position'
-import Body from './body'
+import SpaceBody from './space_body'
 import {DISTANCE_FROM_SUN, GM_CONSTANTS} from '../constants'
 
-class Oribiter extends Body {
+class Oribiter extends SpaceBody {
     velocity: number; // in km/s
     orbitRadius: number; // in km
     orbitingBody: string;
-    parentBody: Body;
+    parentBody: SpaceBody;
 
-    constructor(id: number, name: string, r: number, orbit_body: string, parent:Body, p?: Position) {
+    constructor(id: number, name: string, r: number, orbit_body: string, parent:SpaceBody, p?: Position) {
         if (p == undefined) {
             const distance = DISTANCE_FROM_SUN.get(orbit_body) ?? 0;
             super(id, name, [new Position(0.0, distance)]);

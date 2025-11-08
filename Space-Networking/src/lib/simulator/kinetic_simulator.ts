@@ -1,18 +1,18 @@
-import Body from "./definitions/body";
+import SpaceBody from "./definitions/space_body";
 import Orbiter from "./definitions/orbiter"
 
 class KineticSim {
-    bodies: Array<Body>;
+    bodies: Array<SpaceBody>;
     total_time: number;
 
-    constructor (bods: Array<Body>, time:number) {
+    constructor (bods: Array<SpaceBody>, time:number) {
         this.bodies = bods;
         this.total_time = time;
 
         this.order_bodies()
     }
 
-    getPriority(body: Body): number {
+    getPriority(body: SpaceBody): number {
         const planets = [
         "Mercury", "Venus", "Earth", "Mars",
         "Jupiter", "Saturn", "Uranus", "Neptune"

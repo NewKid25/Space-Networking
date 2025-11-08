@@ -1,6 +1,8 @@
+import SpaceBody from "./space_body"
+
 class Connection
 {
-    sender:Body;
-    receiver:Body;
+    sender:SpaceBody;
+    receiver:SpaceBody;
     
 }

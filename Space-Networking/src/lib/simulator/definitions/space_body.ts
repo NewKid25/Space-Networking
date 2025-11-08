@@ -1,7 +1,7 @@
 import Position from './position'
 import Sender from './sender'
 
-class Body {
+class SpaceBody {
     id: number;
     name: string;
     pos: Array<Position>;
@@ -29,4 +29,4 @@ class Body {
     }
 }
 
-export default Body
+export default SpaceBody

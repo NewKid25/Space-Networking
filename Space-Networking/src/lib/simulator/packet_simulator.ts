@@ -1,4 +1,4 @@
-import Body from './definitions/body'
+import Body from './definitions/space_body'
 
 class Packet_Simulator{
 
