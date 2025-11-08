@@ -1,4 +1,4 @@
-import Sender_Buffer from './buffer'
+import Sender_Buffer from './sender_buffer'
 
 class Sender {
     buffer: Sender_Buffer;
