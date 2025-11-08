@@ -12,6 +12,21 @@ class Body {
             this.name = name;
             this.pos = p;
         }
+
+    set attach_sender(x:Boolean)
+    {
+        if (x==true)
+        {
+            if (this.sender == null) //this body does not have sender
+            {
+                this.sender = new Sender()
+            }
+        }
+        else
+        {
+            this.sender = null;
+        }
+    }
 }
 
 export default Body
