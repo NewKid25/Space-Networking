@@ -29,10 +29,10 @@ let satellite = new Orbiter(6, "Satellite", 150000, "Mercury", mercury)
 let two_bodies = [sun, earth]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
-let engine = new Simulator_Engine(two_bodies, 10000, earth, sun, 1000);
+let engine = new Simulator_Engine(two_bodies, 10000, earth, sun, 100);
 
-engine.packet_simulator.connections.push(new Connection(earth, sun));
-earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );
+// engine.packet_simulator.connections.push(new Connection(earth, sun));
+// earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );
 
 engine.calculate_all_positions();
 // console.log(engine.packets_in_flight)

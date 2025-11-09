@@ -28,7 +28,7 @@ class Packet_Simulator{
     
     network_rescan_time = 100; //CONSTANT THAT USER SHOULD BE ABLE TO SET
 
-    constructor(total_time:number, bodies:SpaceBody[], destination: SpaceBody, source: SpaceBody)
+    constructor(total_time:number, bodies:SpaceBody[], destination: SpaceBody, source: SpaceBody, packet_number:number)
     {
         this.total_time =total_time;
         //note that this is not sorted at the start we have to sort each time we use this anyway
@@ -36,6 +36,7 @@ class Packet_Simulator{
         this.sending_bodies.sorted_on_y = this.sending_bodies.sorted_on_x
         this.destination = destination
         this.source = source
+        this.number_of_packets =packet_number
     }
 
     calculate_all_positions()
@@ -72,6 +73,12 @@ class Packet_Simulator{
         this.connections.splice(connection_index,1) // remove connection from list 
     }
 
+    end_stream_by_connection(key_connection: Connection)
+    {
+       const index_to_remove = this.connections.findIndex((connection)=> connection.sender == key_connection.sender && connection.receiver == key_connection.receiver)
+        this.end_stream(index_to_remove)
+    }
+
 
     Packet_Sim_Update()
     {
@@ -88,7 +95,13 @@ class Packet_Simulator{
             dir = dir_and_arrival_time!.vector;
             arrival_time = dir_and_arrival_time!.time!;
             
-            this.packets_in_flight.push(connection.sender.sender!.send_packet(dir, connection.sender, this.current_time, arrival_time))
+            const packet_in_flight = connection.sender.sender!.send_packet(dir, connection.sender, this.current_time, arrival_time)
+            this.packets_in_flight.push(packet_in_flight)
+
+            if(this.current_time % this.network_rescan_time-1 == 0 && packet_in_flight.packet == -1) //SENTIEL VALUE FOR END TRANSMISSION
+            {
+             this.end_stream_by_connection(connection)    
+            }
             // console.log("Time:",  this.current_time, "Packets in flight:", this.packets_in_flight)
             // if (this.current_time == 100) {
             //     throw new Error()
@@ -230,7 +243,7 @@ class Packet_Simulator{
                 }
             }
         }
-        else // no connections
+        else// no connections
         {
             const nearest_neighbor =  this.find_nearest_neighbor(this.source)
             this.start_stream(this.source, nearest_neighbor!)
@@ -250,13 +263,22 @@ class Packet_Simulator{
 
         let neighbors:SpaceBody[] = []
 
-        neighbors.push(this.sending_bodies.sorted_on_x[x_index-1]!)
-        neighbors.push(this.sending_bodies.sorted_on_x[x_index+1]!)
-        neighbors.push(this.sending_bodies.sorted_on_y[y_index-1]!)
-        neighbors.push(this.sending_bodies.sorted_on_y[y_index+1]!)
+        
+        if (x_index - 1 >= 0) {
+            neighbors.push(this.sending_bodies.sorted_on_x[x_index - 1]!);
+        }
+        if (x_index + 1 < this.sending_bodies.sorted_on_x.length) {
+            neighbors.push(this.sending_bodies.sorted_on_x[x_index + 1]!);
+        }
+        if (y_index - 1 >= 0) {
+            neighbors.push(this.sending_bodies.sorted_on_y[y_index - 1]!);
+        }
+        if (y_index + 1 < this.sending_bodies.sorted_on_y.length) {
+            neighbors.push(this.sending_bodies.sorted_on_y[y_index + 1]!);
+        }
 
-        let shortest_distance = 10**12 //shitty number
-        let closest_neighbor:SpaceBody | undefined = undefined; //shouldnt be undefined though
+        let closest_neighbor:SpaceBody | undefined = neighbors[0]; 
+        let shortest_distance = get_distance(key_body.pos[this.current_time]!,neighbors[0]!.pos[this.current_time]!)
 
         for(const neighbor of neighbors)
         {
@@ -270,6 +292,7 @@ class Packet_Simulator{
             }
         }
 
+        console.log("close neigh", closest_neighbor)
         return closest_neighbor;
     }
 

@@ -13,7 +13,7 @@ class SpaceBody {
             this.pos = p;
         }
 
-    set attach_sender(x:Boolean)
+    attach_sender(x:Boolean)
     {
         if (x==true)
         {

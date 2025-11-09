@@ -26,6 +26,7 @@ class Sender {
     {
         // console.log("current time + arrive time", arrival_timestep+current_time)
         let packet_in_flight:Packet_In_Flight;
+        console.log("packet index", this.next_packet_index)
         if(this.next_packet_index >= this.buffer.data.length)
         {
             packet_in_flight = new Packet_In_Flight(sender.pos![current_time]!, direction, this.PACKET_SENTIEL,  arrival_timestep+current_time,false)
