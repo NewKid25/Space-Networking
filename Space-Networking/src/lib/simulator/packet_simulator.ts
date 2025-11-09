@@ -5,13 +5,14 @@ import Packet_In_Flight from './definitions/packet_in_flight'
 import SpaceBody from './definitions/space_body'
 import { interceptFromCartesian } from './definitions/types'
 import Orbiter from './definitions/orbiter'
-import Simulator_Engine from './simulator_engine'
+// import Simulator_Engine from './simulator_engine'
 
 class Packet_Simulator{
 
     connections : Connection[] = []
     packets_in_flight : Packet_In_Flight[] = []
 
+    current_time:number = 0;
     total_time:number
 
     constructor(total_time:number)
@@ -26,7 +27,7 @@ class Packet_Simulator{
         for(let i =0; i<= this.total_time; i++)
         {
             all_packets[i] = this.Packet_Sim_Update()
-            Simulator_Engine.current_time ++;
+            this.current_time ++;
         }
         return all_packets
     }
@@ -49,10 +50,10 @@ class Packet_Simulator{
             //send packet from sender to reciever
             let dir : Position
             let arrival_time: number
-            const dir_and_arrival_time = this.get_direction_for_packet_send(connection, Simulator_Engine.current_time) //does not yet work(probably)
+            const dir_and_arrival_time = this.get_direction_for_packet_send(connection, this.current_time) //does not yet work(probably)
             dir = dir_and_arrival_time.vector;
             arrival_time = dir_and_arrival_time.time;
-            this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender, arrival_time))
+            this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender, this.current_time, arrival_time))
 
         }
         this.update_packets_in_flight()  
@@ -64,9 +65,7 @@ class Packet_Simulator{
     //update in flight
     update_packets_in_flight()
     {
-        //remove 
-        this.packets_in_flight = this.packets_in_flight.filter((packet)=> packet.arrival_timestep <= Simulator_Engine.current_time)
-
+        
         let arrived_packets : Packet_In_Flight[] =[];
         [this.packets_in_flight, arrived_packets] = this.split_packets_in_flight_by_arrival(this.packets_in_flight)
 
@@ -84,7 +83,7 @@ class Packet_Simulator{
         
         for(let i = packets_in_flight.length; i>=0; i--)
             {
-                if (packets_in_flight[i].arrival_timestep > Simulator_Engine.current_time)//found first entry that has not arrived
+                if (packets_in_flight[i].arrival_timestep > this.current_time)//found first entry that has not arrived
                 {
                     packets_in_transit =packets_in_flight.slice(i)
                     break;
