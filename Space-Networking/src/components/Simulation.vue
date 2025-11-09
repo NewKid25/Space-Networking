@@ -15,7 +15,7 @@ import Buffer from 'three/src/renderers/common/Buffer.js';
 import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 import type { RenderSpaceBody } from './Renderer.vue';
 
-const SIM_SECONDS_PER_FRAME = 10;
+const SIM_SECONDS_PER_FRAME = 1;
 
 const rendererElement = useTemplateRef("rendererElement")
 
@@ -29,13 +29,14 @@ let satellite = new Orbiter(6, "Satellite", 150000, "Mercury", mercury)
 let two_bodies = [sun, earth]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
-let engine = new Simulator_Engine(two_bodies, 100000)
+let engine = new Simulator_Engine(two_bodies, 3)
 
 engine.packet_simulator.connections.push(new Connection(earth, sun));
 earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );
 
 engine.calculate_all_positions();
-
+// console.log(engine.packets_in_flight)
+// throw new Error()
 
 let currentTime = 0;
 

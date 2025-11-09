@@ -73,7 +73,7 @@ class Packet_Simulator{
         }
         this.update_packets_in_flight()  
 
-        return this.packets_in_flight
+        return JSON.parse(JSON.stringify(this.packets_in_flight));
     }
  
 
@@ -85,11 +85,17 @@ class Packet_Simulator{
         [this.packets_in_flight, arrived_packets] = this.split_packets_in_flight_by_arrival(this.packets_in_flight)
         // console.log("Arrived_packets:", arrived_packets)
         
-
-        for(const packet_in_flight of this.packets_in_flight)
-        {
-            packet_in_flight.move_along_direction()
-        }
+        console.log("Time:", this.current_time)
+        this.packets_in_flight.forEach((packet_in_flight)=>packet_in_flight.move_along_direction())
+        // for(const packet_in_flight in this.packets_in_flight)
+        // {
+        //     packet_in_flight.move_along_direction()
+        // }
+        console.log("Packets in Flight:", this.packets_in_flight)
+        console.log("this.packets X:", this.packets_in_flight[0].position.x)
+        // if (this.current_time > 3) {
+        //     throw new Error()
+        // }
         return arrived_packets;
     }
 

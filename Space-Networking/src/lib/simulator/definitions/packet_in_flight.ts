@@ -12,7 +12,7 @@ class Packet_In_Flight
     dropped: boolean = false;
 
     constructor(position: Position, direction: Position, packet: Packet,  arrival_timestep: number, drop: boolean) {
-        this.position = position;
+        this.position = new Position(position.x, position.y);
         this.direction = normalize_vector(direction);
         this.packet = packet;   
         this.arrival_timestep = arrival_timestep;
@@ -21,8 +21,10 @@ class Packet_In_Flight
 
     move_along_direction()
     {
+        console.log("X", this.position.x, "Y:", this.position.y)
         this.position.x += this.direction.x * LIGHT_SPEED
-        this.position.y += this.direction.y *LIGHT_SPEED
+        this.position.y += this.direction.y * LIGHT_SPEED
+        console.log("X", this.position.x, "Y:", this.position.y)
     }
 }
 
