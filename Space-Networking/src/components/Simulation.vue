@@ -13,6 +13,7 @@ import Connection from '@/lib/simulator/definitions/connection';
 import Sender from '@/lib/simulator/definitions/sender';
 import Buffer from 'three/src/renderers/common/Buffer.js';
 import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
+import type { RenderSpaceBody } from './Renderer.vue';
 
 const SIM_SECONDS_PER_FRAME = 10;
 
@@ -23,7 +24,7 @@ let mercury = new Orbiter(2, "Mercury", DISTANCE_FROM_SUN.get("Mercury") ?? 0, "
 let venus = new Orbiter(3, "Venus", DISTANCE_FROM_SUN.get("Venus") ?? 0, "Sun", sun)
 let earth = new Orbiter(4, "Earth", DISTANCE_FROM_SUN.get("Earth") ?? 0, "Sun", sun)
 let mars = new Orbiter(5, "Mars", DISTANCE_FROM_SUN.get("Mars") ?? 0, "Sun", sun)
-let satellite = new Orbiter(6, "Satellite", 150000, "Satellite", mercury)
+let satellite = new Orbiter(6, "Satellite", 150000, "Mercury", mercury)
 
 let two_bodies = [sun, mercury, venus, earth, mars, satellite]
 // let kSim = new KineticSim(two_bodies, 100000)
@@ -42,34 +43,31 @@ onMounted(() => {
 
 	setInterval(() => {
 		if (rendererElement.value != null) {
-
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
-				let kPos = kBody.pos[currentTime];
-				
-				return {
-					pos: {x: kPos?.x ?? 0, y: kPos?.y ?? 0, z: 0},
-					name: kBody.name
-				}
-			});
+			const kPos = kBody.pos[currentTime];
 
-			console.log(currentTime, engine.packets_in_flight[currentTime])
+			// If this is an Orbiter, it has orbitingBody; if it's a plain SpaceBody (Sun), it doesn't.
+			const orbitCenterName =
+				kBody instanceof Orbiter ? kBody.orbitingBody : undefined;
 
-			rendererElement.value.packets = engine.packets_in_flight[currentTime].map((packetInFlight) => {
-				let kPos = packetInFlight.position;
-				
-				return {
-					pos: {x: kPos.x, y: kPos.y, z: 0},
-					streamID: "no"
-				}
+			return {
+				name: kBody.name,
+				pos: {
+				x: kPos?.x ?? 0,
+				y: kPos?.y ?? 0,
+				z: 0,
+				},
+				orbitCenterName, // e.g. "Sun" for planets, "Mercury" for your satellite, undefined for Sun
+			} satisfies RenderSpaceBody;
 			});
 
 			if (currentTime + SIM_SECONDS_PER_FRAME <= 1000000) {
-				currentTime += SIM_SECONDS_PER_FRAME;
+			currentTime += SIM_SECONDS_PER_FRAME;
 			}
 
 			rendererElement.value.renderFrame();
 		}
-	}, 100);
+		}, 100);
 
 	
 

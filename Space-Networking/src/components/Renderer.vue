@@ -10,12 +10,43 @@ import createSpaceBodyMesh from '@/lib/renderer/createSpaceBodyMesh';
 
 import * as THREE from 'three';
 
+export type RenderSpaceBody = {
+  name: string;
+  pos: { x: number; y: number; z: number };
+  orbitCenterName?: string;
+};
+
+function createOrbitLine(
+  radius: number,
+  center: THREE.Vector3,
+  color = 0x444444
+): THREE.Line {
+  const segments = 128;
+  const points: THREE.Vector3[] = [];
+
+  for (let i = 0; i < segments; i++) {
+    const theta = (i / segments) * Math.PI * 2;
+    const x = center.x + radius * Math.cos(theta);
+    const y = center.y + radius * Math.sin(theta);
+    points.push(new THREE.Vector3(x, y, 0));
+  }
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const material = new THREE.LineBasicMaterial({
+    color,
+    transparent: true,
+    opacity: 0.35,
+  });
+
+  return new THREE.LineLoop(geometry, material);
+}
+
 const props = defineProps<{
-	initialSpaceBodies: SpaceBody[]
+	initialSpaceBodies: RenderSpaceBody[]
 }>();
 
 
-const spaceBodies : Ref<SpaceBody[]> = ref(props.initialSpaceBodies);
+const spaceBodies : Ref<RenderSpaceBody[]> = ref(props.initialSpaceBodies);
 const packets : Ref<Packet[]> = ref([]);
 const droppedPackets : Ref<Packet[]> = ref([]);
 
@@ -57,7 +88,7 @@ onMounted(() => {
 		const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 		scene.add( light );
 
-		camera.zoom = .0009;
+		camera.zoom = .0003;
 		camera.updateProjectionMatrix();
 
 		renderer.render( scene, camera );
@@ -65,27 +96,56 @@ onMounted(() => {
 });
 
 // When space bodies are updated, re-render scene
-/*
+
 watch(spaceBodies, (newSpaceBodies) => {
+  if (!scene || !camera || !renderer) return;
 
-	scene.clear();
+  scene.clear();
 
-	const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
-	scene.add( light );
+  const ambient = new THREE.AmbientLight(0x404040, 20);
+  scene.add(ambient);
 
-	for (const spaceBody of newSpaceBodies) {
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  dirLight.position.set(0, 0, 500000);
+  scene.add(dirLight);
 
-		const mesh = createSpaceBodyMesh(spaceBody);
+  // name -> position lookup
+  const positions = new Map<string, THREE.Vector3>();
+  for (const body of newSpaceBodies) {
+    positions.set(
+      body.name,
+      new THREE.Vector3(body.pos.x, body.pos.y, body.pos.z)
+    );
+  }
 
-		mesh.translateX(spaceBody.pos.x);
-		mesh.translateY(spaceBody.pos.y);
-		mesh.translateZ(spaceBody.pos.z);
-		scene.add( mesh );
-	}
+  // Draw orbit paths
+  // orbit lines
+for (const body of newSpaceBodies) {
+  if (!body.orbitCenterName) continue; // skip Sun / non-orbiters
 
-	renderer.render( scene, camera );
+  const bodyPos = positions.get(body.name)!;
+  const centerPos = positions.get(body.orbitCenterName);
+  if (!centerPos) continue;
+
+  const radius = bodyPos.distanceTo(centerPos);
+  if (radius <= 0) continue;
+
+  const color = body.name === "Satellite" ? 0x8888ff : 0x444444;
+  const orbitLine = createOrbitLine(radius, centerPos, color);
+  scene.add(orbitLine);
+  }
+
+  // Draw bodies
+  for (const body of newSpaceBodies) {
+    const mesh = createSpaceBodyMesh(body as any);
+    mesh.position.set(body.pos.x, body.pos.y, body.pos.z);
+    scene.add(mesh);
+  }
+
+  renderer.render(scene, camera);
 });
 
+/*
 watch(packets, (newPackets) => {
 	scene.clear();
 
