@@ -294,7 +294,7 @@ function renderFrame() {
 	
 	let raycaster = new THREE.Raycaster
 	raycaster.setFromCamera( new THREE.Vector2(mousePosX, mousePosY), camera );
-	console.log(mousePosX, mousePosY);
+	// console.log(mousePosX, mousePosY);
 
 	const intersects = raycaster.intersectObjects( spaceBodyThreeObjects, true );
 
@@ -303,7 +303,7 @@ function renderFrame() {
 	if ( intersects.length > 0 ) {
 
 		const object = intersects[ 0 ].object;
-		console.log(object)
+		// console.log(object)
 
 		object.userData.highlighted = true;
 		scene.add(createOrbitLine(object.geometry.boundingSphere.radius * 1.1, object.position, 0xffffff, 300));
