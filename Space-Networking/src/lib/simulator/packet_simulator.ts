@@ -26,6 +26,7 @@ class Packet_Simulator{
         for(let i =0; i<= this.total_time; i++)
         {
             all_packets[i] = this.Packet_Sim_Update()
+            Simulator_Engine.current_time ++;
         }
         return all_packets
     }
@@ -46,8 +47,12 @@ class Packet_Simulator{
         for(const connection of this.connections) // this will calculate a new direction each second (probably too much)
         {
             //send packet from sender to reciever
-            let dir : Position = this.get_direction_for_packet_send(connection) //does not yet work(probably)
-            this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender))
+            let dir : Position
+            let arrival_time: number
+            const dir_and_arrival_time = this.get_direction_for_packet_send(connection, Simulator_Engine.current_time) //does not yet work(probably)
+            dir = dir_and_arrival_time.vector;
+            arrival_time = dir_and_arrival_time.time;
+            this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender, arrival_time))
 
         }
         this.update_packets_in_flight()  
@@ -72,15 +77,22 @@ class Packet_Simulator{
         return arrived_packets;
     }
 
-
-    //send_packet(t)
-        //send next packets on queue (# of packets equal to bandwidth)
-
-    //update in flight
-        //for each packet in flight
-            //time == time when you are arrived -> be done
-            // if (rand) drop packet
-            //move along vector as speed of light
+    split_packets_in_flight_by_arrival(packets_in_flight:Packet_In_Flight[]):[Packet_In_Flight[], Packet_In_Flight[]]
+    {
+        let arrived_packets : Packet_In_Flight[] =[]
+        let packets_in_transit : Packet_In_Flight[] =[]
+        
+        for(let i = packets_in_flight.length; i>=0; i--)
+            {
+                if (packets_in_flight[i].arrival_timestep > Simulator_Engine.current_time)//found first entry that has not arrived
+                {
+                    packets_in_transit =packets_in_flight.slice(i)
+                    break;
+                }
+                arrived_packets.push(packets_in_flight[i])
+            }
+            return [packets_in_transit, arrived_packets]
+    }
 
     get_direction_for_packet_send(conn: Connection, t: number)
     {

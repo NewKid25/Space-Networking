@@ -10,10 +10,11 @@ class Packet_In_Flight
     packet: Packet;
     arrival_timestep: number;
 
-    constructor(position: Position, direction: Position, packet: Packet) {
+    constructor(position: Position, direction: Position, packet: Packet,  arrival_timestep: number) {
         this.position = position;
         this.direction = normalize_vector(direction);
         this.packet = packet;   
+        this.arrival_timestep = arrival_timestep
     }
 
     move_along_direction()

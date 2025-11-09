@@ -20,9 +20,9 @@ class Sender {
         }
     }
 
-    send_packet(direction: Position, sender: SpaceBody) : Packet_In_Flight
+    send_packet(direction: Position, sender: SpaceBody,  arrival_timestep: number) : Packet_In_Flight
     {
-        const packet_in_flight = new Packet_In_Flight(sender.pos[Simulator_Engine.current_time], direction, this.buffer[this.next_packet_index])
+        const packet_in_flight = new Packet_In_Flight(sender.pos[Simulator_Engine.current_time], direction, this.buffer[this.next_packet_index],  arrival_timestep)
         this.next_packet_index ++;
         return packet_in_flight
     }
