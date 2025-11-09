@@ -1,4 +1,4 @@
-const DISTANCE_FROM_SUN: Map<string, number> = new Map([
+export const DISTANCE_FROM_SUN: Map<string, number> = new Map([
     ["Mercury", 58*10^6],
     ["Venus", 109*10^6],
     ["Earth", 150*10^6],
@@ -9,7 +9,7 @@ const DISTANCE_FROM_SUN: Map<string, number> = new Map([
     ["Neptune", 4.5*10^9]
 ])
 
-const GM_CONSTANTS: Map<string, number> = new Map([
+export const GM_CONSTANTS: Map<string, number> = new Map([
     ["Sun", 1.327*10^11],
     ['Mercury', 22031.868551],
     ['Venus', 324858.592000],
