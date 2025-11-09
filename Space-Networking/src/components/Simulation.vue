@@ -24,12 +24,13 @@ let mercury = new Orbiter(2, "Mercury", DISTANCE_FROM_SUN.get("Mercury") ?? 0, "
 let venus = new Orbiter(3, "Venus", DISTANCE_FROM_SUN.get("Venus") ?? 0, "Sun", sun)
 let earth = new Orbiter(4, "Earth", DISTANCE_FROM_SUN.get("Earth") ?? 0, "Sun", sun)
 let mars = new Orbiter(5, "Mars", DISTANCE_FROM_SUN.get("Mars") ?? 0, "Sun", sun)
-let satellite = new Orbiter(6, "Satellite", 150000, "Mercury", mercury)
+let satellite = new Orbiter(6, "Satellite", 150000, "Earth", earth)
+let s2 = new Orbiter(7, "Satellite 2", (DISTANCE_FROM_SUN.get("Earth") ?? 0) * .75, "Sun", sun)
 
 let two_bodies = [sun, earth]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
-let engine = new Simulator_Engine(two_bodies, 10000, earth, sun, 100);
+let engine = new Simulator_Engine(two_bodies, 1000, earth, sun, 100);
 
 // engine.packet_simulator.connections.push(new Connection(earth, sun));
 // earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );

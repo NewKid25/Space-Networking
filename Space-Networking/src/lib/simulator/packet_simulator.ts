@@ -12,8 +12,6 @@ class Packet_Simulator{
     connections : Connection[] = []
     packets_in_flight : Packet_In_Flight[] = []
 
-    bodies: SpaceBody[] =[]
-
     current_time:number = 0;
     total_time:number;
     sending_bodies = {
@@ -45,11 +43,8 @@ class Packet_Simulator{
 
         for(let i =0; i<= this.total_time; i++)
         {
-            console.log("time", i)
-            console.log("connections", this.connections)
             if(i % this.network_rescan_time == 0)
             {
-                console.log("rescanning...")
                 this.scan_for_path()
             }
             all_packets[i] = this.Packet_Sim_Update()
@@ -95,7 +90,7 @@ class Packet_Simulator{
             dir = dir_and_arrival_time!.vector;
             arrival_time = dir_and_arrival_time!.time!;
             
-            const packet_in_flight = connection.sender.sender!.send_packet(dir, connection.sender, this.current_time, arrival_time)
+            const packet_in_flight = connection.sender.sender!.send_packet(dir, connection.sender, this.current_time, arrival_time, connection.receiver.id)
             this.packets_in_flight.push(packet_in_flight)
 
             if(this.current_time % this.network_rescan_time-1 == 0 && packet_in_flight.packet == -1) //SENTIEL VALUE FOR END TRANSMISSION
@@ -107,7 +102,13 @@ class Packet_Simulator{
             //     throw new Error()
             // }
         }
-        this.update_packets_in_flight()  
+        const arrived_packets=this.update_packets_in_flight()  
+        for(const packet_in_flight of arrived_packets)
+        {
+            const recipient = this.sending_bodies.sorted_on_x.find((body)=>body.id == packet_in_flight.recipient_id)
+            recipient!.sender?.receive_packet(packet_in_flight.packet)
+        }
+        
 
         return JSON.parse(JSON.stringify(this.packets_in_flight));
     }
@@ -255,8 +256,8 @@ class Packet_Simulator{
     find_nearest_neighbor(key_body:SpaceBody)
     {
         //should probably do binary search but dont want to implement
-        console.log("x array",this.sending_bodies.sorted_on_x)
-        console.log("y array",this.sending_bodies.sorted_on_y)
+        // console.log("x array",this.sending_bodies.sorted_on_x)
+        // console.log("y array",this.sending_bodies.sorted_on_y)
         
         const x_index = this.sending_bodies.sorted_on_x.findIndex((body)=>body.id == key_body.id)
         const y_index = this.sending_bodies.sorted_on_y.findIndex((body)=>body.id == key_body.id)
@@ -282,8 +283,8 @@ class Packet_Simulator{
 
         for(const neighbor of neighbors)
         {
-            console.log("key_body", key_body)
-            console.log("neighbor", neighbor)
+            // console.log("key_body", key_body)
+            // console.log("neighbor", neighbor)
             let temp_dist = get_distance(key_body.pos[this.current_time]!,neighbor.pos[this.current_time]!)
             if(temp_dist <shortest_distance)
             {
@@ -292,7 +293,6 @@ class Packet_Simulator{
             }
         }
 
-        console.log("close neigh", closest_neighbor)
         return closest_neighbor;
     }
 
@@ -301,7 +301,7 @@ class Packet_Simulator{
         this.sending_bodies.sorted_on_x = this.sending_bodies.sorted_on_x.sort((A, B)=> A.pos[this.current_time]!.x - B.pos[this.current_time]!.x)
         this.sending_bodies.sorted_on_y = this.sending_bodies.sorted_on_y.sort((A, B)=> A.pos[this.current_time]!.y - B.pos[this.current_time]!.y)
     }
-            
+    
 }
 
 

@@ -5,7 +5,6 @@ class Connection
 {
     sender:SpaceBody;
     receiver:SpaceBody;
-    packets_in_flight : Packet_In_Flight[] = []
     constructor (s:SpaceBody, r: SpaceBody)
     {
         this.sender = s

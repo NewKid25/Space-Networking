@@ -101,7 +101,6 @@ onMounted(() => {
 		// Scroll wheel event listener:  Zooming
 		rendererElement.value.addEventListener("wheel", (e) => {
 			if (e.deltaY < 0) {
-				console.log(e.deltaY);
 				camera.zoom += ZOOM_INCREMENT;
 				camera.updateProjectionMatrix();
 
@@ -110,7 +109,6 @@ onMounted(() => {
 			}
 
 			if (e.deltaY > 0) {
-				console.log(e.deltaY);
 				camera.zoom -= ZOOM_INCREMENT;
 				camera.updateProjectionMatrix();
 
@@ -122,8 +120,6 @@ onMounted(() => {
 		rendererElement.value.addEventListener("mousemove", (e) => {
 			// if mouse button down
 			if (Boolean(e.buttons & (1))) {
-				console.log(e.movementX);
-
 				camera.left -= e.movementX * DRAG_SCALE;
 				camera.right -= e.movementX * DRAG_SCALE;
 

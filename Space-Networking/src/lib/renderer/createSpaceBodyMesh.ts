@@ -45,7 +45,6 @@ gltfLoader.load(
     root.scale.set(20000, 20000, 20000);
 
     satelliteTemplate = root;
-    console.log("Satellite model loaded");
   },
   undefined,
   (err) => console.error("Error loading satellite model:", err)

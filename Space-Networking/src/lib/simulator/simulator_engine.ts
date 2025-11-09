@@ -36,8 +36,6 @@ export default class Simulator_Engine
         this.kinetic_simulator.calculate_all_positions()
         this.bodies = this.kinetic_simulator.bodies
 
-        console.log("bodies", this.bodies)
-
         this.packet_simulator = new Packet_Simulator(this.total_time, this.bodies, this.destination, this.source, this.number_of_packets)
         this.packets_in_flight = this.packet_simulator.calculate_all_positions()
     }
