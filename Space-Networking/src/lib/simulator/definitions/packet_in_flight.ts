@@ -21,10 +21,10 @@ class Packet_In_Flight
 
     move_along_direction()
     {
-        console.log("X", this.position.x, "Y:", this.position.y)
+        // console.log("X", this.position.x, "Y:", this.position.y)
         this.position.x += this.direction.x * LIGHT_SPEED
         this.position.y += this.direction.y * LIGHT_SPEED
-        console.log("X", this.position.x, "Y:", this.position.y)
+        // console.log("X", this.position.x, "Y:", this.position.y)
     }
 }
 

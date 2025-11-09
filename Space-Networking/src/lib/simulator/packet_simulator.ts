@@ -85,14 +85,14 @@ class Packet_Simulator{
         [this.packets_in_flight, arrived_packets] = this.split_packets_in_flight_by_arrival(this.packets_in_flight)
         // console.log("Arrived_packets:", arrived_packets)
         
-        console.log("Time:", this.current_time)
+        // console.log("Time:", this.current_time)
         this.packets_in_flight.forEach((packet_in_flight)=>packet_in_flight.move_along_direction())
         // for(const packet_in_flight in this.packets_in_flight)
         // {
         //     packet_in_flight.move_along_direction()
         // }
-        console.log("Packets in Flight:", this.packets_in_flight)
-        console.log("this.packets X:", this.packets_in_flight[0].position.x)
+        // console.log("Packets in Flight:", this.packets_in_flight)
+        // console.log("this.packets X:", this.packets_in_flight[0].position.x)
         // if (this.current_time > 3) {
         //     throw new Error()
         // }
