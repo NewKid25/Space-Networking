@@ -2,6 +2,8 @@ import Body from './definitions/space_body'
 import Connection from './definitions/connection'
 import Position from './definitions/position'
 import Packet_In_Flight from './definitions/packet_in_flight'
+import SpaceBody from './definitions/space_body'
+import { interceptFromCartesian } from './definitions/types'
 
 class Packet_Simulator{
 
@@ -24,7 +26,7 @@ class Packet_Simulator{
         for(const connection of this.connections) // this will calculate a new direction each second (probably too much)
         {
             //send packet from sender to reciever
-            let dir : Position = this.get_direction_for_packet_send()
+            // let dir : Position = this.get_direction_for_packet_send()
 
         }
             
@@ -43,9 +45,32 @@ class Packet_Simulator{
             // if (rand) drop packet
             //move along vector as speed of light
 
-    get_direction_for_packet_send()
+    get_direction_for_packet_send(conn: Connection)
     {
+        let A : SpaceBody = conn.sender;
+        let B : SpaceBody = conn.receiver;
+
+        const result = interceptFromCartesian({
+            A: { x: 0, y: 0 },           // Station
+            O: { x: 4000, y: 0 },        // Planet center
+            B: { x: 4000 + 7000 * Math.cos(Math.PI / 4), 
+                y: 7000 * Math.sin(Math.PI / 4) }, // Orbiter position
+            r: 7000,
+            vo: 2000,
+            vl: 3000
+            });
+
+            if (result.ok) {
+            console.log("θ₀ (auto):", result.thetaHit);
+            console.log("Distance:", result.distance);
+            console.log("Intercept time:", result.time);
+            } else {
+            console.error(result.message);
+            }
+
         return new Position(1,0)
     }
 
 }
+
+export default Packet_Simulator

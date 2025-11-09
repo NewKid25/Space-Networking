@@ -1,3 +1,1 @@
-type Packet = number
-
-export default Packet
+export type Packet = number;

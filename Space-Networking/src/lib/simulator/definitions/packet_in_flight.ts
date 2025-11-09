@@ -1,4 +1,4 @@
-import Packet from "./packet";
+import type {Packet} from "./packet";
 import Position from "./position";
 
 class Packet_In_Flight

@@ -1,4 +1,4 @@
-import Packet from "./packet";
+import type {Packet} from "./packet";
 
 class Sender_Buffer{
     data:Packet[];
