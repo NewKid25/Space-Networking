@@ -28,7 +28,7 @@ class Sender {
         let packet_in_flight:Packet_In_Flight;
         if(this.next_packet_index >= this.buffer.data.length)
         {
-            packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.PACKET_SENTIEL,  arrival_timestep+current_time,false)
+            packet_in_flight = new Packet_In_Flight(sender.pos![current_time]!, direction, this.PACKET_SENTIEL,  arrival_timestep+current_time,false)
         }
         else
         {
@@ -37,7 +37,7 @@ class Sender {
             if (randomNum < LOSS_RATE) {
                 drop = true;
             }
-            packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.buffer.data[this.next_packet_index],  arrival_timestep+current_time, drop)
+            packet_in_flight = new Packet_In_Flight(sender.pos![current_time]!, direction, this.buffer.data[this.next_packet_index]!,  arrival_timestep+current_time, drop)
         }
 
         this.next_packet_index ++;

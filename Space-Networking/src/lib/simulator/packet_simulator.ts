@@ -21,12 +21,13 @@ class Packet_Simulator{
     
     network_rescan_time = 100;
 
-    constructor(total_time:number, src: SpaceBody, dst: SpaceBody, num_packs: number)
+    constructor(total_time:number, src: SpaceBody, dst: SpaceBody, num_packs: number, bodies: Array<SpaceBody>)
     {
         this.total_time = total_time;
         this.source = src;
         this.destination = dst;
         this.number_of_packets = num_packs;
+        this.bodies = bodies;
     }
 
     calculate_all_positions()
@@ -69,10 +70,10 @@ class Packet_Simulator{
             // console.log("Direction:", dir_and_arrival_time.vector, "Time:", dir_and_arrival_time.time)
             // console.log("Connection:", connection)
 
-            dir = dir_and_arrival_time.vector;
-            arrival_time = dir_and_arrival_time.time;
+            dir = dir_and_arrival_time!.vector;
+            arrival_time = dir_and_arrival_time!.time!;
             
-            this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender, this.current_time, arrival_time))
+            this.packets_in_flight.push(connection.sender.sender!.send_packet(dir, connection.sender, this.current_time, arrival_time))
             // console.log("Time:",  this.current_time, "Packets in flight:", this.packets_in_flight)
             // if (this.current_time == 100) {
             //     throw new Error()
@@ -119,7 +120,7 @@ class Packet_Simulator{
                     // console.log("After slice:", packets_in_transit)
                     break;
                 }
-                arrived_packets.push(packets_in_flight[i])
+                arrived_packets.push(packets_in_flight[i]!)
             }
             return [packets_in_transit, arrived_packets]
     }
@@ -136,6 +137,13 @@ class Packet_Simulator{
 
             // console.log("A:", A.pos[t], "B:", B.pos[t], "O:", O.pos[t])
 
+            if (B.pos[t] == undefined || A.pos[t] == undefined || O.pos[t] == undefined) { 
+                return {
+                    vector: new Position(0, 0),
+                    time: t
+                }
+            }
+
             const result = interceptFromCartesian({
             A: { x: A.pos[t].x, y: A.pos[t].y },
             O: { x: O.pos[t].x, y: O.pos[t].y },
@@ -145,15 +153,21 @@ class Packet_Simulator{
             vl: c,
             });
 
-            if (result.ok) {
+            if (result.ok && result != undefined) {
                 return {
-                    vector: new Position(result.x / result.distance, result.y / result.distance),
+                    vector: new Position(result.x! / result.distance!, result.y! / result.distance!),
                     time: result.time
                 }
             }
         }
         else {
             // console.log("A:", A.pos[t], "B:", B.pos[t])
+            if (B.pos[t] == undefined || A.pos[t] == undefined) { 
+                return {
+                    vector: new Position(0, 0),
+                    time: t
+                }
+            }
             const dx = B.pos[t].x - A.pos[t].x;
             const dy = B.pos[t].y - A.pos[t].y;
             const distance = Math.hypot(dx, dy);

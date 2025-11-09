@@ -49,7 +49,7 @@ onMounted(() => {
 			console.log("length", engine.packets_in_flight[currentTime]?.length)
 
 
-			rendererElement.value.packets = engine.packets_in_flight[currentTime].map((packetInFlight) => {
+			rendererElement.value.packets = (engine.packets_in_flight[currentTime] ?? []).map((packetInFlight) => {
 							let kPos = packetInFlight.position;
 						
 

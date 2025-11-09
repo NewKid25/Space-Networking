@@ -19,7 +19,7 @@ export default class Simulator_Engine
     constructor (bods: Array<SpaceBody>, total_time:number, src:SpaceBody, dst:SpaceBody, num_packs:number)
     {
         this.kinetic_simulator = new KineticSim(bods, total_time)
-        this.packet_simulator = new Packet_Simulator(total_time, src, dst, num_packs)
+        this.packet_simulator = new Packet_Simulator(total_time, src, dst, num_packs, bods)
         this.source = src;
         this.destination = dst;
         this.number_of_packets = num_packs;

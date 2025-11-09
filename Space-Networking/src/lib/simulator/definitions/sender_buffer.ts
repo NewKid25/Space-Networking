@@ -11,6 +11,9 @@ class Sender_Buffer{
         {
             this.data = data
         }
+        else {
+            this.data = []
+        }
     }
     
 }  

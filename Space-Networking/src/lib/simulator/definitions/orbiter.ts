@@ -54,15 +54,15 @@ class Orbiter extends SpaceBody {
     const omega = this.velocity / this.orbitRadius; // rad/s; set sign for CW/CCW if needed
 
     // 1) Angle at the PREVIOUS frame, relative to the parent's PREVIOUS position
-    const thetaPrev = Math.atan2(orbPrev.y - parentPrev.y, orbPrev.x - parentPrev.x);
+    const thetaPrev = Math.atan2(orbPrev!.y - parentPrev!.y, orbPrev!.x - parentPrev!.x);
 
     // 2) Advance angle
     const thetaNew = thetaPrev + omega * dt;
 
     // 3) Place orbiter around the parent's CURRENT position
     return {
-        x: parentCurr.x + this.orbitRadius * Math.cos(thetaNew),
-        y: parentCurr.y + this.orbitRadius * Math.sin(thetaNew),
+        x: parentCurr!.x + this.orbitRadius * Math.cos(thetaNew),
+        y: parentCurr!.y + this.orbitRadius * Math.sin(thetaNew),
     };
     }
 
