@@ -75,6 +75,22 @@ watch(spaceBodies, (newSpaceBodies) => {
 
 		const mesh = createSpaceBodyMesh(spaceBody);
 
+		// const textureLoader = new THREE.TextureLoader();
+// textureLoader.load(
+//   'https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=', // Image to load
+//   (texture) => {
+//     // This function runs when the image is loaded successfully
+// 	const geometry = new THREE.SphereGeometry( 49528 );
+//     const material = new THREE.MeshBasicMaterial({ map: texture });
+//     const mesh = new THREE.Mesh(geometry, material);
+	
+// 		mesh.translateX(spaceBody.pos.x);
+// 		mesh.translateY(spaceBody.pos.y);
+// 		mesh.translateZ(spaceBody.pos.z);
+//     	scene.add(mesh);
+//   }
+// );
+
 		mesh.translateX(spaceBody.pos.x);
 		mesh.translateY(spaceBody.pos.y);
 		mesh.translateZ(spaceBody.pos.z);
@@ -82,6 +98,8 @@ watch(spaceBodies, (newSpaceBodies) => {
 	}
 
 	renderer.render( scene, camera );
+
+	setTimeout(() => {renderer.render(scene, camera)},500);
 });
 
 </script>
