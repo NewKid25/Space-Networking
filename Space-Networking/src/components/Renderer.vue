@@ -25,6 +25,9 @@ var renderer : THREE.WebGLRenderer;
 
 const rendererElement = useTemplateRef("rendererElement");
 
+const INITIAL_ZOOM = 0.0009
+const ZOOM_INCREMENT = 0.00005
+
 // Make this visible to parents
 defineExpose({
 	spaceBodies,
@@ -57,10 +60,29 @@ onMounted(() => {
 		const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 		scene.add( light );
 
-		camera.zoom = .0009;
+		camera.zoom = INITIAL_ZOOM;
 		camera.updateProjectionMatrix();
 
 		renderer.render( scene, camera );
+
+		rendererElement.value.addEventListener("wheel", (e) => {
+			if (e.deltaY < 0) {
+				console.log(e.deltaY);
+				camera.zoom += ZOOM_INCREMENT;
+				camera.updateProjectionMatrix();
+
+				renderFrame();
+
+			}
+
+			if (e.deltaY > 0) {
+				console.log(e.deltaY);
+				camera.zoom -= ZOOM_INCREMENT;
+				camera.updateProjectionMatrix();
+
+				renderFrame();
+			}
+		})
 	}
 });
 
@@ -139,6 +161,8 @@ function renderFrame() {
 
 	renderer.render( scene, camera );
 }
+
+
 
 </script>
 
