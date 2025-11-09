@@ -16,6 +16,8 @@ export interface InterceptResult {
   thetaHit?: number;
   distance?: number;
   time?: number;
+  x?: number;
+  y?: number;
   iterations?: number;
   message?: string;
 }
@@ -94,6 +96,8 @@ export function interceptFromCartesian(params: InterceptInputCartesian): Interce
     thetaHit: theta,
     distance,
     time,
+    x: distance * Math.cos(theta),
+    y: distance * Math.sin(theta),
     iterations: it,
   };
 }
