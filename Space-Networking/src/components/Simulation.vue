@@ -26,7 +26,7 @@ let earth = new Orbiter(4, "Earth", DISTANCE_FROM_SUN.get("Earth") ?? 0, "Sun", 
 let mars = new Orbiter(5, "Mars", DISTANCE_FROM_SUN.get("Mars") ?? 0, "Sun", sun)
 let satellite = new Orbiter(6, "Satellite", 150000, "Mercury", mercury)
 
-let two_bodies = [sun, earth]
+let two_bodies = [sun, mercury, venus, earth, mars, satellite]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
 let engine = new Simulator_Engine(two_bodies, 100000)

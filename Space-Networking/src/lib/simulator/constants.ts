@@ -1,8 +1,8 @@
 export const DISTANCE_FROM_SUN: Map<string, number> = new Map([
-    ["Mercury", 58*10**6],
-    ["Venus", 109*10**6],
-    ["Earth", 150*10**6],
-    ["Mars", 228*10**6],
+    ["Mercury", 58*10**4],
+    ["Venus", 109*10**4],
+    ["Earth", 150*10**4],
+    ["Mars", 228*10**4],
     ["Jupiter", 778*10**6],
     ["Saturn", 1.4*10**9],
     ["Uranus", 2.9*10**9],
