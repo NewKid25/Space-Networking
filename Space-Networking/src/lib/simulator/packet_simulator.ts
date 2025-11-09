@@ -11,6 +11,24 @@ class Packet_Simulator{
     connections : Connection[] = []
     packets_in_flight : Packet_In_Flight[] = []
 
+    total_time:number
+
+    constructor(total_time:number)
+    {
+        this.total_time =total_time
+    }
+
+    calculate_all_positions()
+    {
+        let all_packets :[Packet_In_Flight[]] = [[]]
+
+        for(let i =0; i<= this.total_time; i++)
+        {
+            all_packets[i] = this.Packet_Sim_Update()
+        }
+        return all_packets
+    }
+
     start_stream(sender: Body,receiver: Body)
     {
         if(sender.sender && receiver.sender) // both bodies have a sender
@@ -32,6 +50,8 @@ class Packet_Simulator{
 
         }
         this.update_packets_in_flight()  
+
+        return this.packets_in_flight
     }
  
 
@@ -48,6 +68,7 @@ class Packet_Simulator{
         {
             packet_in_flight.move_along_direction()
         }
+        return arrived_packets;
     }
 
 
