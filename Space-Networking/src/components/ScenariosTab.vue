@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import Simulation from './Simulation.vue';
 import { Select } from 'primevue';
-import { ref } from 'vue';
+import { ref, useTemplateRef, watch } from 'vue';
 
-import { SimpleLineScenario } from '@/lib/simulator/scenarios';
+import { SimpleLineScenario, TestDataScenario } from '@/lib/simulator/scenarios';
 
+var selection = ref();
 
-const selectedSim = ref();
-const scenarioModules = [
-	{"name": "Simple Line", "value": SimpleLineScenario }
-]
+const scenarioModules = {
+	"Simple Line": SimpleLineScenario
+	 }
 </script>
 
 <template>
-	<select>
-		<option>Simple Line Scenario</option>
-		<option>Bingo</option>
+	<select v-model="selection">
+		<option value="Simple Line">Simple Line Scenario</option>
+		<option value="Test Data">Gotta go with test</option>
 	</select>
+
+	<Simulation :setup="SimpleLineScenario" v-if="selection == 'Simple Line'"></Simulation>
+	<Simulation :setup="TestDataScenario" v-if="selection == 'Test Data'"></Simulation>
 
 
 </template>
