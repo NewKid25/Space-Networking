@@ -65,6 +65,7 @@ onMounted(() => {
 });
 
 // When space bodies are updated, re-render scene
+/*
 watch(spaceBodies, (newSpaceBodies) => {
 
 	scene.clear();
@@ -76,22 +77,6 @@ watch(spaceBodies, (newSpaceBodies) => {
 
 		const mesh = createSpaceBodyMesh(spaceBody);
 
-		// const textureLoader = new THREE.TextureLoader();
-// textureLoader.load(
-//   'https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=', // Image to load
-//   (texture) => {
-//     // This function runs when the image is loaded successfully
-// 	const geometry = new THREE.SphereGeometry( 49528 );
-//     const material = new THREE.MeshBasicMaterial({ map: texture });
-//     const mesh = new THREE.Mesh(geometry, material);
-	
-// 		mesh.translateX(spaceBody.pos.x);
-// 		mesh.translateY(spaceBody.pos.y);
-// 		mesh.translateZ(spaceBody.pos.z);
-//     	scene.add(mesh);
-//   }
-// );
-
 		mesh.translateX(spaceBody.pos.x);
 		mesh.translateY(spaceBody.pos.y);
 		mesh.translateZ(spaceBody.pos.z);
@@ -99,11 +84,59 @@ watch(spaceBodies, (newSpaceBodies) => {
 	}
 
 	renderer.render( scene, camera );
-
-	setTimeout(() => {renderer.render(scene, camera)},500);
 });
 
+watch(packets, (newPackets) => {
+	scene.clear();
+
+	const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
+	scene.add( light );
+
+	const geometry = new THREE.SphereGeometry( 5000 );
+	const material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+
+	for (const packet of newPackets) {
+		const mesh = new THREE.Mesh( geometry, material );
+
+		mesh.translateX(packet.pos.x);
+		mesh.translateY(packet.pos.y);
+		mesh.translateZ(packet.pos.z);
+		scene.add( mesh );
+	}
+
+	renderer.render( scene, camera );
+})
+*/
+
 function renderFrame() {
+
+	scene.clear();
+
+	const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
+	scene.add( light );
+
+	for (const spaceBody of spaceBodies.value) {
+
+		const mesh = createSpaceBodyMesh(spaceBody);
+
+		mesh.translateX(spaceBody.pos.x);
+		mesh.translateY(spaceBody.pos.y);
+		mesh.translateZ(spaceBody.pos.z);
+		scene.add( mesh );
+	}
+
+	const geometry = new THREE.SphereGeometry( 5000 );
+	const material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+
+	for (const packet of packets.value) {
+		const mesh = new THREE.Mesh( geometry, material );
+
+		mesh.translateX(packet.pos.x);
+		mesh.translateY(packet.pos.y);
+		mesh.translateZ(packet.pos.z);
+		scene.add( mesh );
+	}
+
 	renderer.render( scene, camera );
 }
 

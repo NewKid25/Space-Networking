@@ -8,6 +8,7 @@ import { LOSS_RATE } from '../constants';
 class Sender {
     buffer: Sender_Buffer;
     next_packet_index:number =0;
+    PACKET_SENTIEL:number = -1
 
         constructor();
         constructor (x: Sender_Buffer);
@@ -23,12 +24,21 @@ class Sender {
 
     send_packet(direction: Position, sender: SpaceBody, current_time:number,  arrival_timestep: number) : Packet_In_Flight
     {
-        const randomNum = Math.random();
-        let drop = false;
-        if (randomNum < LOSS_RATE) {
-            drop = true;
+        let packet_in_flight:Packet_In_Flight;
+        if(this.next_packet_index >= this.buffer.data.length)
+        {
+            packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.PACKET_SENTIEL,  arrival_timestep,false)
         }
-        const packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.buffer[this.next_packet_index],  arrival_timestep, drop)
+        else
+        {
+            const randomNum = Math.random();
+            let drop = false;
+            if (randomNum < LOSS_RATE) {
+                drop = true;
+            }
+            packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.buffer[this.next_packet_index],  arrival_timestep, drop)
+        }
+
         this.next_packet_index ++;
         return packet_in_flight
     }
