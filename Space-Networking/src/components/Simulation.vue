@@ -9,6 +9,8 @@ import { DISTANCE_FROM_SUN } from '../lib/simulator/constants'
 
 import { onMounted, render, useTemplateRef } from 'vue';
 
+const SIM_SECONDS_PER_FRAME = 10;
+
 const rendererElement = useTemplateRef("rendererElement")
 
 let sun = new SpaceBody(1, "Sun", [new Position(0, 0)])
@@ -16,23 +18,31 @@ let earth = new Oribiter(2, "Earth", 1000000, "Sun", sun, new Position(1000000, 
 let satellite = new Oribiter(3, "DA MOOOOON", 80000, "Earth", earth, new Position(0, 1080000))
 
 let two_bodies = [sun, earth, satellite]
-let kSim = new KineticSim(two_bodies, 1000)
+let kSim = new KineticSim(two_bodies, 100000)
 kSim.calculate_all_positions();
+
+let currentTime = 0;
 
 onMounted(() => {
 
-	if (rendererElement.value != null) {
+	setInterval(() => {
+		if (rendererElement.value != null) {
+			rendererElement.value.spaceBodies = kSim.bodies.map((kBody) => {
+				let kPos = kBody.pos[currentTime];
+				
+				return {
+					pos: {x: kPos?.x ?? 0, y: kPos?.y ?? 0, z: 0},
+					name: kBody.name
+				}
+			});
 
-		rendererElement.value.spaceBodies = kSim.bodies.map((kBody) => {
-			let kPos = kBody.pos[kBody.pos.length - 1];
-			
-			return {
-				pos: {x: kPos?.x ?? 0, y: kPos?.y ?? 0, z: 0},
-				name: kBody.name
+			if (currentTime < 100000) {
+				currentTime += SIM_SECONDS_PER_FRAME;
 			}
-		});
+		}
+	}, 0);
 
-	}
+	
 
 })
 
