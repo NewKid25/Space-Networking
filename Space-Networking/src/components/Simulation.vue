@@ -6,6 +6,7 @@ import Orbiter from '../lib/simulator/definitions/orbiter'
 import KineticSim from '../lib/simulator/kinetic_simulator'
 import Position from '../lib/simulator/definitions/position'
 import { DISTANCE_FROM_SUN } from '../lib/simulator/constants'
+import Simulator_Engine from '@/lib/simulator/simulator_engine';
 
 import { onMounted, render, useTemplateRef } from 'vue';
 
@@ -18,8 +19,11 @@ let earth = new Orbiter(2, "Earth", 200000, "Sun", sun)
 let satellite = new Orbiter(3, "DA MOOOOON", 50000, "Earth", earth)
 
 let two_bodies = [sun, earth, satellite]
-let kSim = new KineticSim(two_bodies, 1000000)
-kSim.calculate_all_positions();
+// let kSim = new KineticSim(two_bodies, 100000)
+// kSim.calculate_all_positions();
+let engine = new Simulator_Engine(two_bodies, 100000)
+engine.calculate_all_positions
+
 
 let currentTime = 0;
 
@@ -27,7 +31,7 @@ onMounted(() => {
 
 	setInterval(() => {
 		if (rendererElement.value != null) {
-			rendererElement.value.spaceBodies = kSim.bodies.map((kBody) => {
+			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
 				let kPos = kBody.pos[currentTime];
 				
 				return {
