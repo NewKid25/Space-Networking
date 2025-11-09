@@ -15,7 +15,7 @@ import Buffer from 'three/src/renderers/common/Buffer.js';
 import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 import type { RenderSpaceBody } from './Renderer.vue';
 
-const SIM_SECONDS_PER_FRAME = 1;
+const SIM_SECONDS_PER_FRAME = 10;
 
 const rendererElement = useTemplateRef("rendererElement")
 
@@ -44,22 +44,37 @@ onMounted(() => {
 
 	setInterval(() => {
 		if (rendererElement.value != null) {
+
+
+
+			rendererElement.value.packets = engine.packets_in_flight[currentTime].map((packetInFlight) => {
+							let kPos = packetInFlight.position;
+						
+
+							return {
+								pos: {x: kPos._x, y: kPos._y, z: 0},
+								streamID: "no"
+							}
+			})
+
+			// console.log(rendererElement.value.packets)
+			
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
-			const kPos = kBody.pos[currentTime];
+				const kPos = kBody.pos[currentTime];
 
-			// If this is an Orbiter, it has orbitingBody; if it's a plain SpaceBody (Sun), it doesn't.
-			const orbitCenterName =
-				kBody instanceof Orbiter ? kBody.orbitingBody : undefined;
+				// If this is an Orbiter, it has orbitingBody; if it's a plain SpaceBody (Sun), it doesn't.
+				const orbitCenterName =
+					kBody instanceof Orbiter ? kBody.orbitingBody : undefined;
 
-			return {
-				name: kBody.name,
-				pos: {
-				x: kPos?.x ?? 0,
-				y: kPos?.y ?? 0,
-				z: 0,
-				},
-				orbitCenterName, // e.g. "Sun" for planets, "Mercury" for your satellite, undefined for Sun
-			} satisfies RenderSpaceBody;
+				return {
+					name: kBody.name,
+					pos: {
+					x: kPos?.x ?? 0,
+					y: kPos?.y ?? 0,
+					z: 0,
+					},
+					orbitCenterName, // e.g. "Sun" for planets, "Mercury" for your satellite, undefined for Sun
+				} satisfies RenderSpaceBody;
 			});
 
 			if (currentTime + SIM_SECONDS_PER_FRAME <= 1000000) {

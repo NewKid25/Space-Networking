@@ -139,7 +139,7 @@ onMounted(() => {
 });
 
 // When space bodies are updated, re-render scene
-
+/*
 watch(spaceBodies, (newSpaceBodies) => {
   if (!scene || !camera || !renderer) return;
 
@@ -187,6 +187,7 @@ for (const body of newSpaceBodies) {
 
   renderer.render(scene, camera);
 });
+*/
 
 /*
 watch(packets, (newPackets) => {
@@ -218,15 +219,44 @@ function renderFrame() {
 	const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 	scene.add( light );
 
-	for (const spaceBody of spaceBodies.value) {
+	const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+	dirLight.position.set(0, 0, 500000);
+	scene.add(dirLight);
 
-		const mesh = createSpaceBodyMesh(spaceBody);
-
-		mesh.translateX(spaceBody.pos.x);
-		mesh.translateY(spaceBody.pos.y);
-		mesh.translateZ(spaceBody.pos.z);
-		scene.add( mesh );
+	// name -> position lookup
+	const positions = new Map<string, THREE.Vector3>();
+	for (const body of spaceBodies.value) {
+		positions.set(
+		body.name,
+		new THREE.Vector3(body.pos.x, body.pos.y, body.pos.z)
+		);
 	}
+
+	// Draw orbit paths
+	// orbit lines
+	for (const body of spaceBodies.value) {
+	if (!body.orbitCenterName) continue; // skip Sun / non-orbiters
+
+	const bodyPos = positions.get(body.name)!;
+	const centerPos = positions.get(body.orbitCenterName);
+	if (!centerPos) continue;
+
+	const radius = bodyPos.distanceTo(centerPos);
+	if (radius <= 0) continue;
+
+	const color = body.name === "Satellite" ? 0x8888ff : 0x444444;
+	const orbitLine = createOrbitLine(radius, centerPos, color);
+	scene.add(orbitLine);
+	}
+
+	// Draw bodies
+	for (const body of spaceBodies.value) {
+		const mesh = createSpaceBodyMesh(body as any);
+		mesh.position.set(body.pos.x, body.pos.y, body.pos.z);
+		scene.add(mesh);
+	}
+
+	renderer.render(scene, camera);
 
 	const geometry = new THREE.SphereGeometry( 5000 );
 	const material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
