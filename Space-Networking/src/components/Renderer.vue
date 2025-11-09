@@ -16,6 +16,7 @@ export type RenderSpaceBody = {
   orbitCenterName?: string;
 };
 
+
 function createOrbitLine(
   radius: number,
   center: THREE.Vector3,
@@ -41,9 +42,15 @@ function createOrbitLine(
   return new THREE.LineLoop(geometry, material);
 }
 
-const props = defineProps<{
-	initialSpaceBodies: RenderSpaceBody[]
-}>();
+interface Props {
+	initialSpaceBodies: RenderSpaceBody[],
+	elemWidth: string,
+	elemHeight: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	elemWidth: '500px', elemHeight: '500px'
+})
 
 
 const spaceBodies : Ref<RenderSpaceBody[]> = ref(props.initialSpaceBodies);
@@ -93,13 +100,15 @@ onMounted(() => {
 		const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 		scene.add( light );
 
-		camera.zoom = INITIAL_ZOOM;
+		camera.zoom = .0009;
 		camera.updateProjectionMatrix();
 
 		renderer.render( scene, camera );
 
 		// Scroll wheel event listener:  Zooming
 		rendererElement.value.addEventListener("wheel", (e) => {
+			    e.preventDefault();
+    e.stopPropagation();
 			if (e.deltaY < 0) {
 				camera.zoom += ZOOM_INCREMENT;
 				camera.updateProjectionMatrix();
@@ -130,6 +139,12 @@ onMounted(() => {
 
 				renderFrame();
 			}
+
+
+			// mousePosX = ( e.offsetX / rendererElement.value.clientWidth ) * 2 - 1;
+			// mousePosY = - ( e.offsetY / rendererElement.value.clientHeight ) * 2 + 1;
+
+			// console.log(pointerX, pointerY);			
 		})
 	}
 });
@@ -266,6 +281,27 @@ function renderFrame() {
 		scene.add( mesh );
 	}
 
+	
+	// let raycaster = new THREE.Raycaster
+	// raycaster.setFromCamera( new THREE.Vector2(mousePosX, mousePosY), camera );
+	// // console.log(mousePosX, mousePosY);
+
+	// const intersects = raycaster.intersectObjects( spaceBodyThreeObjects, true );
+
+	// // console.log(spaceBodyThreeObjects);
+
+	// if ( intersects.length > 0 ) {
+
+	// 	const object = intersects[ 0 ].object;
+	// 	// console.log(object)
+
+	// 	object.userData.highlighted = true;
+	// 	scene.add(createOrbitLine(object.geometry.boundingSphere.radius * 1.1, object.position, 0xffffff, 300));
+
+
+	// }
+	
+
 	renderer.render( scene, camera );
 }
 
@@ -280,7 +316,7 @@ function renderFrame() {
 
 <style scoped>
 	div {
-		width: 500px;
-		height: 500px;
+		width: v-bind(elemWidth);
+		height:  v-bind(elemHeight);
 	}
 </style>

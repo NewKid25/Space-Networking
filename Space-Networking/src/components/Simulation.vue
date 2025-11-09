@@ -15,25 +15,32 @@ import Buffer from 'three/src/renderers/common/Buffer.js';
 import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 import type { RenderSpaceBody } from './Renderer.vue';
 
-const SIM_SECONDS_PER_FRAME = 5;
+import { TestDataScenario, SimpleLineScenario } from '@/lib/simulator/scenarios/index';
+
+var SIM_SECONDS_PER_FRAME = 10;
 
 const rendererElement = useTemplateRef("rendererElement")
 
-let sun = new SpaceBody(1, "Sun", [new Position(0, 0)])
-let mercury = new Orbiter(2, "Mercury", DISTANCE_FROM_SUN.get("Mercury") ?? 0, "Sun", sun)
-let venus = new Orbiter(3, "Venus", DISTANCE_FROM_SUN.get("Venus") ?? 0, "Sun", sun)
-let earth = new Orbiter(4, "Earth", DISTANCE_FROM_SUN.get("Earth") ?? 0, "Sun", sun)
-let mars = new Orbiter(5, "Mars", DISTANCE_FROM_SUN.get("Mars") ?? 0, "Sun", sun)
-let satellite = new Orbiter(6, "Satellite", 150000, "Earth", earth)
-let s2 = new Orbiter(7, "Satellite 2", (DISTANCE_FROM_SUN.get("Earth") ?? 0) * .75, "Sun", sun)
+interface Props {
+	setup?: SpaceBody[];
+	elemWidth?: string;
+	elemHeight?: string;
+	simSec?: number | [number, number];
+	maxSecondsSim?: number
+}
 
-let two_bodies = [sun, earth]
+const props = withDefaults(defineProps<Props>(), {
+	elemWidth: '500px', elemHeight: '500px', maxSecondsSim: 500000
+});
+
+const simBodies: SpaceBody[] = props.setup ?? TestDataScenario;
+
+const earth = simBodies.find((b) => b.name === "Earth");
+const mars = simBodies.find((b) => b.name === "Mars");
+const engine = new Simulator_Engine(simBodies, props.maxSecondsSim, earth!, mars!, 10000)
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
-let engine = new Simulator_Engine(two_bodies, 1000, earth, sun, 100);
 
-// engine.packet_simulator.connections.push(new Connection(earth, sun));
-// earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );
 
 engine.calculate_all_positions();
 // console.log(engine.packets_in_flight)
@@ -42,62 +49,58 @@ engine.calculate_all_positions();
 let currentTime = 0;
 
 onMounted(() => {
+	if (typeof props.simSec == 'number') SIM_SECONDS_PER_FRAME = props.simSec;
 
 	setInterval(() => {
-		if (rendererElement.value != null) {
-
-			console.log("Time",currentTime)
-			console.log("length", engine.packets_in_flight[currentTime]?.length)
-
-
-			rendererElement.value.packets = (engine.packets_in_flight[currentTime] ?? []).map((packetInFlight) => {
-							let kPos = packetInFlight.position;
-						
-
-							return {
-								pos: {x: kPos._x, y: kPos._y, z: 0},
-								streamID: "no"
-							}
-			})
-
-			// console.log(rendererElement.value.packets)
-			
+		if (!rendererElement.value) return;
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
-				const kPos = kBody.pos[currentTime];
+			const isOrbiter = kBody instanceof Orbiter;
 
-				// If this is an Orbiter, it has orbitingBody; if it's a plain SpaceBody (Sun), it doesn't.
-				const orbitCenterName =
-					kBody instanceof Orbiter ? kBody.orbitingBody : undefined;
+			// Orbiters: use time-indexed position.
+			// Static SpaceBody (like in SimpleLineScenario): always use pos[0].
+			const kPos = isOrbiter
+				? kBody.pos[currentTime]
+				: kBody.pos[0];
 
-				return {
-					name: kBody.name,
-					pos: {
-					x: kPos?.x ?? 0,
-					y: kPos?.y ?? 0,
-					z: 0,
-					},
-					orbitCenterName, // e.g. "Sun" for planets, "Mercury" for your satellite, undefined for Sun
-				} satisfies RenderSpaceBody;
+			const orbitCenterName = isOrbiter ? kBody.orbitingBody : undefined;
+
+			return {
+				name: kBody.name,
+				pos: {
+				x: kPos?.x ?? 0,
+				y: kPos?.y ?? 0,
+				z: 0,
+				},
+				orbitCenterName,
+			} satisfies RenderSpaceBody;
 			});
 
-			if (currentTime + SIM_SECONDS_PER_FRAME <= 1000000) {
-			currentTime += SIM_SECONDS_PER_FRAME;
+			rendererElement.value.packets = (engine.packets_in_flight[currentTime] ?? []).map((packetInFlight) => {
+				let kPos = packetInFlight.position;
+			
+
+				return {
+					pos: {x: kPos._x, y: kPos._y, z: 0},
+					streamID: "no"
+				}
+			})
+
+			if (currentTime + SIM_SECONDS_PER_FRAME <= props.maxSecondsSim) {
+				currentTime += SIM_SECONDS_PER_FRAME;
+			} else {
+				currentTime = 0;
 			}
+			console.log(currentTime, SIM_SECONDS_PER_FRAME);
 
 			rendererElement.value.renderFrame();
-		}
-		}, 100);
-
-	
-
-})
-
-
+	}, 100);
+});
 
 </script>
 
 <template>
 	<p>Hello</p>
 	<Renderer :initial-space-bodies="[]" ref="rendererElement"> </Renderer>
+	<input type="range" v-if="Array.isArray(props.simSec)" :min="props.simSec[0]" :max="props.simSec[1]" v-model="SIM_SECONDS_PER_FRAME"></input>
 	<slot> <!-- Other controls go here --> </slot>
 </template>

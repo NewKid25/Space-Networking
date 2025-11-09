@@ -1,0 +1,227 @@
+/* =========================================
+   Packets in Space – Global Styles
+   ========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  /* Palette */
+  --bg-main: #04020a;         /* near-black purple */
+  --bg-header: #070214;
+  --bg-tabs: #04020b;
+  --bg-tab-hover: #0e0420;
+  --bg-tab-active: #04020a;
+  --bg-panel: #000000;        /* inner content card */
+
+  --text-main: #ffffff;
+  --text-muted: #c7bdf5;
+
+  --accent: #b79dff;
+  --accent-soft: #d7ccff;
+
+  /* Layout */
+  --radius-lg: 16px;
+  --shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.85);
+  --transition-fast: 0.2s ease;
+}
+
+/* ========== RESET-ish ========== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* Root app layout */
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== HEADER ========== */
+
+#header {
+  width: 100%;
+  background: var(--bg-header);
+  padding: 1.2rem 1rem;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#header h1 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 2.2rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+/* ========== TABS (PrimeVue Tabs / Tab / TabList / TabPanels) ========== */
+
+/* Tabs wrapper bar, full width under header */
+.p-tabs {
+  width: 100%;
+  background: var(--bg-tabs) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Horizontal list that spans the whole viewport */
+.p-tablist {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent !important;
+}
+
+/* Each tab: half width, flat, no rounded pills */
+.p-tab {
+  flex: 1;
+  padding: 0.85rem 0;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+/* Slight divider line in accent tone, no gray */
+.p-tab:not(:last-child) {
+  border-right: 1px solid rgba(183, 157, 255, 0.22);
+}
+
+/* Hover state */
+.p-tab:hover {
+  background: var(--bg-tab-hover);
+  color: var(--accent);
+}
+
+/* Active state */
+.p-tab[aria-selected='true'],
+.p-tab.p-highlight {
+  background: var(--bg-tab-active);
+  color: var(--accent-soft);
+}
+
+/* ========== TAB PANELS / MAIN CONTENT ========== */
+
+/* Wrapper centers the actual panel; no full-width background here */
+.p-tabpanels {
+  width: 100%;
+  margin: 2rem 0 3rem;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* The main content card all your inner components sit in */
+.p-tabpanel {
+  width: min(1100px, 100% - 3rem);
+  background: var(--bg-panel);
+  border-radius: var(--radius-lg);
+  padding: 1.8rem 2rem 2.4rem;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left; /* body text left aligned */
+}
+
+/* Headings inside content */
+.p-tabpanel h2,
+.p-tabpanel h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Copy / paragraphs */
+.p-tabpanel p {
+  margin: 0.25rem 0;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+/* ========== SIMULATION / RENDERER ========== */
+
+/* Simulation.vue outer <p> + <Renderer> naturally inherit .p-tabpanel left-align */
+
+#rendererElement {
+  width: 100%;
+  max-width: 720px;
+  margin: 1.5rem auto;
+  aspect-ratio: 1 / 1;           /* square viewport */
+  padding: 0;                    /* card already has padding */
+  background: #000000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.9);
+}
+
+/* Ensure canvas scales to container */
+#rendererElement canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ========== SELECT / SIMPLE FORM ELEMENTS (ScenariosTab) ========== */
+
+select {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(183, 157, 255, 0.4);
+  background: #000000;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(183, 157, 255, 0.25);
+}
+
+/* ========== LINKS & BUTTONS (if you add later) ========== */
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-soft);
+}
+
+#rendererElement {
+  overscroll-behavior: contain; /* prevents parent scroll when zooming */
+}
