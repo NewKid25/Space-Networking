@@ -104,11 +104,11 @@ class Packet_Simulator{
         let arrived_packets : Packet_In_Flight[] =[]
         let packets_in_transit : Packet_In_Flight[] =[]
         
-        for(let i = packets_in_flight.length - 1; i>=0; i--)
+        for(let i = 0; i<packets_in_flight.length; i++)
             {
-                if (packets_in_flight[i].arrival_timestep > this.current_time)//found first entry that has not arrived
+                if (packets_in_flight[i]!.arrival_timestep > this.current_time)//found first entry that has not arrived
                 {
-                    packets_in_transit = packets_in_flight.slice(0, i + 1)
+                    packets_in_transit = packets_in_flight.slice(i, packets_in_flight.length)
                     // console.log("After slice:", packets_in_transit)
                     break;
                 }

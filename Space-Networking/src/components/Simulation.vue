@@ -15,7 +15,7 @@ import Buffer from 'three/src/renderers/common/Buffer.js';
 import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 import type { RenderSpaceBody } from './Renderer.vue';
 
-const SIM_SECONDS_PER_FRAME = 10;
+const SIM_SECONDS_PER_FRAME = 5;
 
 const rendererElement = useTemplateRef("rendererElement")
 
@@ -45,6 +45,8 @@ onMounted(() => {
 	setInterval(() => {
 		if (rendererElement.value != null) {
 
+			console.log("Time",currentTime)
+			console.log("length", engine.packets_in_flight[currentTime]?.length)
 
 
 			rendererElement.value.packets = engine.packets_in_flight[currentTime].map((packetInFlight) => {
