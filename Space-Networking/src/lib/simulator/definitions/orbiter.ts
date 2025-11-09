@@ -17,6 +17,7 @@ class Oribiter extends SpaceBody {
             super(id, name, [p]);
         }     
         this.velocity = this.calculate_velocity(orbit_body, r);
+        // console.log(this.velocity)
         this.orbitRadius = r;
         this.orbitingBody = orbit_body;
         this.parentBody = parent;
@@ -27,6 +28,7 @@ class Oribiter extends SpaceBody {
             planet_name = "Sun";
         }
         const gmConstant = GM_CONSTANTS.get(planet_name) ?? GM_CONSTANTS.get("Sun") ?? 0;
+        // console.log(gmConstant);
         return Math.sqrt(gmConstant / radius);
     }
 
