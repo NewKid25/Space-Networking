@@ -9,8 +9,12 @@ import { DISTANCE_FROM_SUN } from '../lib/simulator/constants'
 import Simulator_Engine from '@/lib/simulator/simulator_engine';
 
 import { onMounted, render, useTemplateRef } from 'vue';
+import Connection from '@/lib/simulator/definitions/connection';
+import Sender from '@/lib/simulator/definitions/sender';
+import Buffer from 'three/src/renderers/common/Buffer.js';
+import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 
-const SIM_SECONDS_PER_FRAME = 100;
+const SIM_SECONDS_PER_FRAME = 10;
 
 const rendererElement = useTemplateRef("rendererElement")
 
@@ -22,6 +26,10 @@ let two_bodies = [sun, earth, satellite]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
 let engine = new Simulator_Engine(two_bodies, 100000)
+
+engine.packet_simulator.connections.push(new Connection(earth, sun));
+earth.sender = new Sender( new Sender_Buffer( [...Array(100000).keys()] ) );
+
 engine.calculate_all_positions();
 
 
@@ -41,7 +49,18 @@ onMounted(() => {
 				}
 			});
 
-			if (currentTime < 1000000) {
+			console.log(currentTime, engine.packets_in_flight[currentTime])
+
+			rendererElement.value.packets = engine.packets_in_flight[currentTime].map((packetInFlight) => {
+				let kPos = packetInFlight.position;
+				
+				return {
+					pos: {x: kPos.x, y: kPos.y, z: 0},
+					streamID: "no"
+				}
+			});
+
+			if (currentTime + SIM_SECONDS_PER_FRAME <= 1000000) {
 				currentTime += SIM_SECONDS_PER_FRAME;
 			}
 
