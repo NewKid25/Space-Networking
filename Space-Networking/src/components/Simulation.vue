@@ -15,24 +15,29 @@ import Buffer from 'three/src/renderers/common/Buffer.js';
 import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 import type { RenderSpaceBody } from './Renderer.vue';
 
+import { TestDataScenario, SimpleLineScenario } from '@/lib/simulator/scenarios/index';
+
 const SIM_SECONDS_PER_FRAME = 10;
 
 const rendererElement = useTemplateRef("rendererElement")
 
-let sun = new SpaceBody(1, "Sun", [new Position(0, 0)])
-let mercury = new Orbiter(2, "Mercury", DISTANCE_FROM_SUN.get("Mercury") ?? 0, "Sun", sun)
-let venus = new Orbiter(3, "Venus", DISTANCE_FROM_SUN.get("Venus") ?? 0, "Sun", sun)
-let earth = new Orbiter(4, "Earth", DISTANCE_FROM_SUN.get("Earth") ?? 0, "Sun", sun)
-let mars = new Orbiter(5, "Mars", DISTANCE_FROM_SUN.get("Mars") ?? 0, "Sun", sun)
-let satellite = new Orbiter(6, "Satellite", 150000, "Mercury", mercury)
+const props = defineProps<{
+	setup?: SpaceBody[];
+}>();
 
-let two_bodies = [sun, mercury, venus, earth, mars, satellite]
+const simBodies: SpaceBody[] = props.setup ?? TestDataScenario;
+
+const engine = new Simulator_Engine(simBodies, 100000)
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
-let engine = new Simulator_Engine(two_bodies, 100000)
 
-engine.packet_simulator.connections.push(new Connection(earth, sun));
-earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );
+const earth = simBodies.find((b) => b.name === "Earth");
+const sun = simBodies.find((b) => b.name === "Sun");
+
+if(earth && sun) {
+	engine.packet_simulator.connections.push(new Connection(earth, sun));
+	earth.sender = new Sender( new Sender_Buffer( Array.from({length: 100000}, (_, i) => i) ) );
+}
 
 engine.calculate_all_positions();
 
@@ -40,15 +45,18 @@ engine.calculate_all_positions();
 let currentTime = 0;
 
 onMounted(() => {
-
 	setInterval(() => {
-		if (rendererElement.value != null) {
+		if (!rendererElement.value) return;
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
-			const kPos = kBody.pos[currentTime];
+			const isOrbiter = kBody instanceof Orbiter;
 
-			// If this is an Orbiter, it has orbitingBody; if it's a plain SpaceBody (Sun), it doesn't.
-			const orbitCenterName =
-				kBody instanceof Orbiter ? kBody.orbitingBody : undefined;
+			// Orbiters: use time-indexed position.
+			// Static SpaceBody (like in SimpleLineScenario): always use pos[0].
+			const kPos = isOrbiter
+				? kBody.pos[currentTime]
+				: kBody.pos[0];
+
+			const orbitCenterName = isOrbiter ? kBody.orbitingBody : undefined;
 
 			return {
 				name: kBody.name,
@@ -57,23 +65,17 @@ onMounted(() => {
 				y: kPos?.y ?? 0,
 				z: 0,
 				},
-				orbitCenterName, // e.g. "Sun" for planets, "Mercury" for your satellite, undefined for Sun
+				orbitCenterName,
 			} satisfies RenderSpaceBody;
 			});
 
 			if (currentTime + SIM_SECONDS_PER_FRAME <= 1000000) {
-			currentTime += SIM_SECONDS_PER_FRAME;
+				currentTime += SIM_SECONDS_PER_FRAME;
 			}
 
 			rendererElement.value.renderFrame();
-		}
-		}, 100);
-
-	
-
-})
-
-
+	}, 100);
+});
 
 </script>
 

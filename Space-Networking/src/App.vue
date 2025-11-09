@@ -3,6 +3,7 @@
 import test from "./components/test.vue"
 import Renderer from "./components/Renderer.vue";
 import Simulation from "./components/Simulation.vue";
+import { SimpleLineScenario, TestDataScenario } from "./lib/simulator/scenarios/index";
 
 </script>
 
@@ -12,7 +13,8 @@ import Simulation from "./components/Simulation.vue";
     Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
     documentation
   </p>
-  <Simulation></Simulation>
+  <Simulation :setup="TestDataScenario"></Simulation>
+  <Simulation :setup="SimpleLineScenario"></Simulation>
 </template>
 
 <style scoped></style>
