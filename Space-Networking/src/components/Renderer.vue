@@ -108,6 +108,7 @@ onMounted(() => {
 
 		// Scroll wheel event listener:  Zooming
 		rendererElement.value.addEventListener("wheel", (e) => {
+			e.preventDefault();
 			if (e.deltaY < 0) {
 				console.log(e.deltaY);
 				camera.zoom += ZOOM_INCREMENT;
