@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import test from "./components/test.vue"
+import Renderer from "./components/Renderer.vue";
 
 </script>
 
@@ -10,7 +11,7 @@ import test from "./components/test.vue"
     Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
     documentation
   </p>
-  <test></test>
+  <Renderer :space-bodies="[]" :packets="[]" :dropped-packets="[]"></Renderer>
 </template>
 
 <style scoped></style>
