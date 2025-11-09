@@ -9,12 +9,14 @@ class Packet_In_Flight
     direction:Position; //okat position is just a 2d vector so we can treat it as a direction vector
     packet: Packet;
     arrival_timestep: number;
+    dropped: boolean = false;
 
-    constructor(position: Position, direction: Position, packet: Packet,  arrival_timestep: number) {
+    constructor(position: Position, direction: Position, packet: Packet,  arrival_timestep: number, drop: boolean) {
         this.position = position;
         this.direction = normalize_vector(direction);
         this.packet = packet;   
-        this.arrival_timestep = arrival_timestep
+        this.arrival_timestep = arrival_timestep;
+        this.dropped = drop;
     }
 
     move_along_direction()

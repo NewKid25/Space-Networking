@@ -23,3 +23,4 @@ export const GM_CONSTANTS: Map<string, number> = new Map([
 ])
 
 export const LIGHT_SPEED =  299792 //km/s
+export const LOSS_RATE = 0.01
