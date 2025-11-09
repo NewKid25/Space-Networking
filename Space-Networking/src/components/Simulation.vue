@@ -17,17 +17,25 @@ import type { RenderSpaceBody } from './Renderer.vue';
 
 import { TestDataScenario, SimpleLineScenario } from '@/lib/simulator/scenarios/index';
 
-const SIM_SECONDS_PER_FRAME = 10;
+var SIM_SECONDS_PER_FRAME = 10;
 
 const rendererElement = useTemplateRef("rendererElement")
 
-const props = defineProps<{
+interface Props {
 	setup?: SpaceBody[];
-}>();
+	elemWidth?: string;
+	elemHeight?: string;
+	simSec?: number | [number, number];
+	maxSecondsSim?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	elemWidth: '500px', elemHeight: '500px', maxSecondsSim: 500000
+});
 
 const simBodies: SpaceBody[] = props.setup ?? TestDataScenario;
 
-const engine = new Simulator_Engine(simBodies, 100000)
+const engine = new Simulator_Engine(simBodies, props.maxSecondsSim)
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
 
@@ -45,6 +53,8 @@ engine.calculate_all_positions();
 let currentTime = 0;
 
 onMounted(() => {
+	if (typeof props.simSec == 'number') SIM_SECONDS_PER_FRAME = props.simSec;
+
 	setInterval(() => {
 		if (!rendererElement.value) return;
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
@@ -69,9 +79,12 @@ onMounted(() => {
 			} satisfies RenderSpaceBody;
 			});
 
-			if (currentTime + SIM_SECONDS_PER_FRAME <= 1000000) {
+			if (currentTime + SIM_SECONDS_PER_FRAME <= props.maxSecondsSim) {
 				currentTime += SIM_SECONDS_PER_FRAME;
+			} else {
+				currentTime = 0;
 			}
+			console.log(currentTime, SIM_SECONDS_PER_FRAME);
 
 			rendererElement.value.renderFrame();
 	}, 100);
@@ -82,5 +95,6 @@ onMounted(() => {
 <template>
 	<p>Hello</p>
 	<Renderer :initial-space-bodies="[]" ref="rendererElement"> </Renderer>
+	<input type="range" v-if="Array.isArray(props.simSec)" :min="props.simSec[0]" :max="props.simSec[1]" v-model="SIM_SECONDS_PER_FRAME"></input>
 	<slot> <!-- Other controls go here --> </slot>
 </template>
