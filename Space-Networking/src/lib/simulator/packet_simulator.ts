@@ -4,7 +4,7 @@ import Position from './definitions/position'
 import Packet_In_Flight from './definitions/packet_in_flight'
 import SpaceBody from './definitions/space_body'
 import { interceptFromCartesian } from './definitions/types'
-import Oribiter from './definitions/orbiter'
+import Orbiter from './definitions/orbiter'
 import Simulator_Engine from './simulator_engine'
 
 class Packet_Simulator{
@@ -101,7 +101,7 @@ class Packet_Simulator{
 
         const c = 299_792.458; // km/s
 
-        if (B instanceof Oribiter) {
+        if (B instanceof Orbiter) {
             let O : SpaceBody = B.parentBody;
 
             const result = interceptFromCartesian({

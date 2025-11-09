@@ -10,7 +10,8 @@ export const DISTANCE_FROM_SUN: Map<string, number> = new Map([
 ])
 
 export const GM_CONSTANTS: Map<string, number> = new Map([
-    ["Sun", 1.327*10**11],
+    // ["Sun", 1.327*10**11],
+    ["Sun", 398600.435507],
     ['Mercury', 22031.868551],
     ['Venus', 324858.592000],
     ['Earth', 398600.435507],

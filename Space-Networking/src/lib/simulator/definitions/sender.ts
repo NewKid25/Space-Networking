@@ -1,7 +1,7 @@
 import Sender_Buffer from './sender_buffer'
 import Position from './position';
 import Packet_In_Flight from './packet_in_flight';
-import SpaceBody from './space_body';
+import type SpaceBody from './space_body';
 import Simulator_Engine from '../simulator_engine';
 
 class Sender {

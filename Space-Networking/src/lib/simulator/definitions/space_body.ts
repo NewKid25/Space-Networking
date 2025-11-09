@@ -29,4 +29,4 @@ class SpaceBody {
     }
 }
 
-export default SpaceBody
+export default SpaceBody;

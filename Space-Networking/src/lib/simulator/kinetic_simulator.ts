@@ -1,5 +1,5 @@
 import SpaceBody from "./definitions/space_body";
-import Orbiter from "./definitions/orbiter"
+// import Orbiter from "./definitions/orbiter"
 import Position from "./definitions/position";
 
 class KineticSim {
@@ -39,15 +39,15 @@ class KineticSim {
 
         while (t < this.total_time) {
             for (const body of this.bodies) {
-                if (body instanceof Orbiter) {
-                    let result = body.calculate_position_at_next_t(t)
+                if ('calculate_position_at_next_t' in body && typeof (body as any).calculate_position_at_next_t === 'function') {
+                    let result = (body as any).calculate_position_at_next_t(t)
                     body.pos.push(new Position(result.x, result.y));
                 }
                 else {
                     body.pos.push(new Position(0, 0)) 
                 }
 
-                // console.log("Time - %d, Body - %s, x - %s, y - %s", t, body.name, body.pos[t].x.toFixed(2), body.pos[t].y.toFixed(2));
+                //console.log("Time - %d, Body - %s, x - %s, y - %s", t, body.name, body.pos[t].x.toFixed(2), body.pos[t].y.toFixed(2));
             }
             // if (this.bodies[1].pos[t].y > 0 && t > 10000) {
             //     break;
