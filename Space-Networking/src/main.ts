@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
 import Lara from '@primeuix/themes/lara';
 import App from './App.vue'
+import './lib/stylesheets.scss'
 
 import SpaceBody from './lib/simulator/definitions/space_body'
 import Orbiter from './lib/simulator/definitions/orbiter'
