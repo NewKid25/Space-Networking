@@ -13,23 +13,24 @@ export default class Simulator_Engine
 
     constructor (bods: Array<SpaceBody>, total_time:number)
     {
-        this.packet_simulator = new Packet_Simulator(total_time)
         this.kinetic_simulator = new KineticSim(bods, total_time)
+        this.packet_simulator = new Packet_Simulator(total_time)
     }
     
 
 
     calculate_all_positions()
     {
-        this.packets_in_flight = this.packet_simulator.calculate_all_positions()
         this.kinetic_simulator.calculate_all_positions()
         this.bodies = this.kinetic_simulator.bodies
-    }
-
-    calculate_packet_positions()
-    {
+        this.packet_simulator.bodies = this.bodies
         this.packets_in_flight = this.packet_simulator.calculate_all_positions()
     }
+
+    // calculate_packet_positions()
+    // {
+    //     this.packets_in_flight = this.packet_simulator.calculate_all_positions()
+    // }
 
     calculate_spacebody_positions()
     {

@@ -1,4 +1,3 @@
-import Body from './definitions/space_body'
 import Connection from './definitions/connection'
 import Position from './definitions/position'
 import Packet_In_Flight from './definitions/packet_in_flight'
@@ -13,11 +12,14 @@ class Packet_Simulator{
     packets_in_flight : Packet_In_Flight[] = []
 
     current_time:number = 0;
-    total_time:number
+    total_time:number;
+    bodies:Array<SpaceBody>;
+    
+    network_rescan_time = 100;
 
     constructor(total_time:number)
     {
-        this.total_time =total_time
+        this.total_time =total_time;
     }
 
     calculate_all_positions()
@@ -26,13 +28,17 @@ class Packet_Simulator{
 
         for(let i =0; i<= this.total_time; i++)
         {
+            if(i % this.network_rescan_time == 0)
+            {
+                
+            }
             all_packets[i] = this.Packet_Sim_Update()
             this.current_time ++;
         }
         return all_packets
     }
 
-    start_stream(sender: Body,receiver: Body)
+    start_stream(sender: SpaceBody,receiver: SpaceBody)
     {
         if(sender.sender && receiver.sender) // both bodies have a sender
         {
@@ -81,7 +87,7 @@ class Packet_Simulator{
         let arrived_packets : Packet_In_Flight[] =[]
         let packets_in_transit : Packet_In_Flight[] =[]
         
-        for(let i = packets_in_flight.length; i>=0; i--)
+        for(let i = packets_in_flight.length - 1; i>=0; i--)
             {
                 if (packets_in_flight[i].arrival_timestep > this.current_time)//found first entry that has not arrived
                 {
