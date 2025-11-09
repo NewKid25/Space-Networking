@@ -1,9 +1,11 @@
+import Packet from "./packet";
+
 class Sender_Buffer{
-    data:number[];
+    data:Packet[];
 
     constructor();
-    constructor(data:number[]);
-    constructor(data?:number[])
+    constructor(data:Packet[]);
+    constructor(data?:Packet[])
     {
         if(data)
         {

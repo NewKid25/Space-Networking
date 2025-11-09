@@ -1,4 +1,5 @@
 import Sender_Buffer from './sender_buffer'
+import Position from './position';
 
 class Sender {
     buffer: Sender_Buffer;
@@ -13,6 +14,11 @@ class Sender {
         else{
             this.buffer =  new Sender_Buffer()
         }
+    }
+
+    send_packet(direction: Position)
+    {
+        
     }
 }
 
