@@ -15,7 +15,7 @@ const scenarioModules = {
 <template>
 	<select v-model="selection">
 		<option value="Simple Line">Simple Line Scenario</option>
-		<option value="Test Data">Gotta go with test</option>
+		<option value="Test Data">Solar System</option>
 	</select>
 
 	<Simulation :setup="SimpleLineScenario" v-if="selection == 'Simple Line'"></Simulation>
