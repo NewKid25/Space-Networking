@@ -4,11 +4,12 @@ import Position from './definitions/position'
 import Packet_In_Flight from './definitions/packet_in_flight'
 import SpaceBody from './definitions/space_body'
 import { interceptFromCartesian } from './definitions/types'
+import Simulator_Engine from './simulator_engine'
 
 class Packet_Simulator{
 
-    connections : Connection[]
-    packets_in_flight : Packet_In_Flight[]
+    connections : Connection[] = []
+    packets_in_flight : Packet_In_Flight[] = []
 
     start_stream(sender: Body,receiver: Body)
     {
@@ -26,14 +27,28 @@ class Packet_Simulator{
         for(const connection of this.connections) // this will calculate a new direction each second (probably too much)
         {
             //send packet from sender to reciever
-            // let dir : Position = this.get_direction_for_packet_send()
+            let dir : Position = this.get_direction_for_packet_send(connection) //does not yet work(probably)
+            this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender))
 
         }
-            
+        this.update_packets_in_flight()  
     }
  
 
-        //update in flight
+    //update in flight
+    update_packets_in_flight()
+    {
+        //remove 
+        this.packets_in_flight = this.packets_in_flight.filter((packet)=> packet.arrival_timestep <= Simulator_Engine.current_time)
+
+        let arrived_packets : Packet_In_Flight[] =[];
+        [this.packets_in_flight, arrived_packets] = this.split_packets_in_flight_by_arrival(this.packets_in_flight)
+
+        for(const packet_in_flight of this.packets_in_flight)
+        {
+            packet_in_flight.move_along_direction()
+        }
+    }
 
 
     //send_packet(t)
@@ -71,6 +86,23 @@ class Packet_Simulator{
         return new Position(1,0)
     }
 
+    
+    split_packets_in_flight_by_arrival(packets_in_flight:Packet_In_Flight[]):[Packet_In_Flight[], Packet_In_Flight[]]
+    {
+        let arrived_packets : Packet_In_Flight[] =[]
+        let packets_in_transit : Packet_In_Flight[] =[]
+        
+        for(let i = packets_in_flight.length; i>=0; i--)
+            {
+                if (packets_in_flight[i].arrival_timestep > Simulator_Engine.current_time)//found first entry that has not arrived
+                {
+                    packets_in_transit =packets_in_flight.slice(i)
+                    break;
+                }
+                arrived_packets.push(packets_in_flight[i])
+            }
+            return [packets_in_transit, arrived_packets]
+    }
 }
-
 export default Packet_Simulator
+

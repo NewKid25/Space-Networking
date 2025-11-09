@@ -1,4 +1,5 @@
-class Simulator_Engine
+export default class Simulator_Engine
 {
-    static current_time
+    static current_time=0;
 }
+

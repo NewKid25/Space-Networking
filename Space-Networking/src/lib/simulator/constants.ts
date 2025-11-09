@@ -20,3 +20,5 @@ export const GM_CONSTANTS: Map<string, number> = new Map([
     ['Uranus', 5794556.40],
     ['Neptune', 6836527.10058]
 ])
+
+export const LIGHT_SPEED =  299792 //km/s

@@ -1,8 +1,12 @@
 import Sender_Buffer from './sender_buffer'
 import Position from './position';
+import Packet_In_Flight from './packet_in_flight';
+import SpaceBody from './space_body';
+import Simulator_Engine from '../simulator_engine';
 
 class Sender {
     buffer: Sender_Buffer;
+    next_packet_index:number =0;
 
         constructor();
         constructor (x: Sender_Buffer);
@@ -16,9 +20,11 @@ class Sender {
         }
     }
 
-    send_packet(direction: Position)
+    send_packet(direction: Position, sender: SpaceBody) : Packet_In_Flight
     {
-        
+        const packet_in_flight = new Packet_In_Flight(sender.pos[Simulator_Engine.current_time], direction, this.buffer[this.next_packet_index])
+        this.next_packet_index ++;
+        return packet_in_flight
     }
 }
 
