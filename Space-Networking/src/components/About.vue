@@ -19,7 +19,7 @@ import TabPanel from 'primevue/tabpanel';
 
   <h3>Subheading</h3>
   <p>Hello my friend. I am Steve</p>
-  <Simulation :setup="TestDataScenario" :elemWidth="'100vw'" :simSec="3000"></Simulation>
+  <Simulation :setup="TestDataScenario" :elemWidth="'100vw'" :simSec="3500"></Simulation>
   <h3>Simple Line Scenario</h3>
   <p>Imagine, if you will, a line. Now, further, imagine that along that line, there were a number of satellites</p>
   <Simulation :setup="SimpleLineScenario"></Simulation>

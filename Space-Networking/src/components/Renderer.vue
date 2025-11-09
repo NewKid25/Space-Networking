@@ -152,8 +152,8 @@ onMounted(() => {
 			}
 
 
-			mousePosX = ( e.offsetX / rendererElement.value.clientWidth ) * 2 - 1;
-			mousePosY = - ( e.offsetY / rendererElement.value.clientHeight ) * 2 + 1;
+			// mousePosX = ( e.offsetX / rendererElement.value.clientWidth ) * 2 - 1;
+			// mousePosY = - ( e.offsetY / rendererElement.value.clientHeight ) * 2 + 1;
 
 			// console.log(pointerX, pointerY);			
 		})
@@ -299,24 +299,24 @@ function renderFrame() {
 	}
 
 	
-	let raycaster = new THREE.Raycaster
-	raycaster.setFromCamera( new THREE.Vector2(mousePosX, mousePosY), camera );
-	// console.log(mousePosX, mousePosY);
+	// let raycaster = new THREE.Raycaster
+	// raycaster.setFromCamera( new THREE.Vector2(mousePosX, mousePosY), camera );
+	// // console.log(mousePosX, mousePosY);
 
-	const intersects = raycaster.intersectObjects( spaceBodyThreeObjects, true );
+	// const intersects = raycaster.intersectObjects( spaceBodyThreeObjects, true );
 
-	// console.log(spaceBodyThreeObjects);
+	// // console.log(spaceBodyThreeObjects);
 
-	if ( intersects.length > 0 ) {
+	// if ( intersects.length > 0 ) {
 
-		const object = intersects[ 0 ].object;
-		// console.log(object)
+	// 	const object = intersects[ 0 ].object;
+	// 	// console.log(object)
 
-		object.userData.highlighted = true;
-		scene.add(createOrbitLine(object.geometry.boundingSphere.radius * 1.1, object.position, 0xffffff, 300));
+	// 	object.userData.highlighted = true;
+	// 	scene.add(createOrbitLine(object.geometry.boundingSphere.radius * 1.1, object.position, 0xffffff, 300));
 
 
-	}
+	// }
 	
 
 	renderer.render( scene, camera );
