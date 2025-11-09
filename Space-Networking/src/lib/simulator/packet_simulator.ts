@@ -14,12 +14,19 @@ class Packet_Simulator{
     current_time:number = 0;
     total_time:number;
     bodies:Array<SpaceBody>;
+
+    source: SpaceBody;
+    destination: SpaceBody;
+    number_of_packets: number;
     
     network_rescan_time = 100;
 
-    constructor(total_time:number)
+    constructor(total_time:number, src: SpaceBody, dst: SpaceBody, num_packs: number)
     {
-        this.total_time =total_time;
+        this.total_time = total_time;
+        this.source = src;
+        this.destination = dst;
+        this.number_of_packets = num_packs;
     }
 
     calculate_all_positions()

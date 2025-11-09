@@ -11,19 +11,26 @@ export default class Simulator_Engine
     packets_in_flight : [Packet_In_Flight[]] = [[]]
     bodies: Array<SpaceBody> = new Array<SpaceBody>();
 
-    constructor (bods: Array<SpaceBody>, total_time:number)
+    source: SpaceBody;
+    destination: SpaceBody;
+    number_of_packets: number;
+
+
+    constructor (bods: Array<SpaceBody>, total_time:number, src:SpaceBody, dst:SpaceBody, num_packs:number)
     {
         this.kinetic_simulator = new KineticSim(bods, total_time)
-        this.packet_simulator = new Packet_Simulator(total_time)
+        this.packet_simulator = new Packet_Simulator(total_time, src, dst, num_packs)
+        this.source = src;
+        this.destination = dst;
+        this.number_of_packets = num_packs;
     }
     
-
-
     calculate_all_positions()
     {
         this.kinetic_simulator.calculate_all_positions()
         this.bodies = this.kinetic_simulator.bodies
         this.packet_simulator.bodies = this.bodies
+
         this.packets_in_flight = this.packet_simulator.calculate_all_positions()
     }
 
