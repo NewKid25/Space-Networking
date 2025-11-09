@@ -2,6 +2,7 @@
 
 import test from "./components/test.vue"
 import Renderer from "./components/Renderer.vue";
+import Simulation from "./components/Simulation.vue";
 
 </script>
 
@@ -11,7 +12,7 @@ import Renderer from "./components/Renderer.vue";
     Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
     documentation
   </p>
-  <Renderer :space-bodies="[]" :packets="[]" :dropped-packets="[]"></Renderer>
+  <Simulation></Simulation>
 </template>
 
 <style scoped></style>

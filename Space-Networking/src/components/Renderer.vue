@@ -3,35 +3,51 @@ import type Position from '@/lib/renderer/definitions/position'
 import type SpaceBody from '@/lib/renderer/definitions/spaceBody'
 import type Packet from '@/lib/renderer/definitions/packet';
 
-import { useTemplateRef, onMounted, render } from 'vue';
+import { useTemplateRef, onMounted, render, ref, watch } from 'vue';
+import type { Ref } from 'vue';
+
+import createSpaceBodyMesh from '@/lib/renderer/createSpaceBodyMesh';
 
 import * as THREE from 'three';
 
 const props = defineProps<{
-	spaceBodies: SpaceBody[]
-	packets: Packet[]
-	droppedPackets: Packet[]
+	initialSpaceBodies: SpaceBody[]
 }>();
+
+
+const spaceBodies : Ref<SpaceBody[]> = ref(props.initialSpaceBodies);
+const packets : Ref<Packet[]> = ref([]);
+const droppedPackets : Ref<Packet[]> = ref([]);
+
+var scene : THREE.Scene;
+var camera: THREE.OrthographicCamera;
+var renderer : THREE.WebGLRenderer;
 
 const rendererElement = useTemplateRef("rendererElement");
 
+// Make this visible to parents
+defineExpose({
+	spaceBodies,
+	packets,
+	droppedPackets
+});
 
 // When this component is loaded, create the three.js
 // scene
 onMounted(() => {
 	if (rendererElement.value != null)
 	{
-		const scene = new THREE.Scene();
+		scene = new THREE.Scene();
 		// const camera = new THREE.PerspectiveCamera( 75, rendererElement.value.clientWidth / rendererElement.value.clientHeight, 0.1, 1000 );
-		const camera = new THREE.OrthographicCamera( -rendererElement.value.clientWidth, rendererElement.value.clientWidth, -rendererElement.value.clientHeight, rendererElement.value.clientHeight, 0, 1000000)
+		camera = new THREE.OrthographicCamera( -rendererElement.value.clientWidth, rendererElement.value.clientWidth, -rendererElement.value.clientHeight, rendererElement.value.clientHeight, 0, 1000000)
 
 
-		const renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer();
 		renderer.setSize( rendererElement.value.offsetWidth, rendererElement.value.offsetHeight );
 		rendererElement.value.appendChild( renderer.domElement );
 
 		const geometry = new THREE.SphereGeometry( 695508 );
-		const material = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
+		const material = new THREE.MeshStandardMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
 		const sphere = new THREE.Mesh( geometry, material );
 		scene.add( sphere );
 
@@ -47,7 +63,26 @@ onMounted(() => {
 	}
 });
 
+// When space bodies are updated, re-render scene
+watch(spaceBodies, (newSpaceBodies) => {
 
+	scene.clear();
+
+	const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
+	scene.add( light );
+
+	for (const spaceBody of newSpaceBodies) {
+
+		const mesh = createSpaceBodyMesh(spaceBody);
+
+		mesh.translateX(spaceBody.pos.x);
+		mesh.translateY(spaceBody.pos.y);
+		mesh.translateZ(spaceBody.pos.z);
+		scene.add( mesh );
+	}
+
+	renderer.render( scene, camera );
+});
 
 </script>
 
