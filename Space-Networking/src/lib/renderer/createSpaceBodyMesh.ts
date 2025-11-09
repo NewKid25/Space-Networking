@@ -1,11 +1,24 @@
 import type SpaceBody from "../renderer/definitions/spaceBody";
 import * as THREE from 'three';
 
+import mercuryImgSrc from "../assets/mercury.jpg"
+import venusImgSrc from "../assets/venus.jpg"
+import earthImgSrc from "../assets/earth.jpg"
+import marsImgSrc from "../assets/mars.jpg"
+import jupiterImgSrc from "../assets/jupiter.jpg"
+import saturnImgSrc from "../assets/saturn.jpg"
+import uranusImgSrc from "../assets/uranus.jpg"
 import neptuneImgSrc from "../assets/neptune.jpg"
 
 const textures = {
-	"mercury": new THREE.TextureLoader().load('../assets/mercury.jpg'),
-	"neptune": new THREE.TextureLoader().load(neptuneImgSrc)
+	"mercury": new THREE.TextureLoader().load(mercuryImgSrc),
+	"venus": new THREE.TextureLoader().load(venusImgSrc),
+	"earth": new THREE.TextureLoader().load(earthImgSrc),
+	"mars": new THREE.TextureLoader().load(marsImgSrc),
+	"jupiter": new THREE.TextureLoader().load(jupiterImgSrc),
+	"saturn": new THREE.TextureLoader().load(saturnImgSrc),
+	"uranus": new THREE.TextureLoader().load(uranusImgSrc),
+	"neptune": new THREE.TextureLoader().load(neptuneImgSrc),
 }
 
 export default function createSpaceBodyMesh(spaceBody : SpaceBody) {
@@ -14,90 +27,81 @@ export default function createSpaceBodyMesh(spaceBody : SpaceBody) {
 	{
 		case 'Mercury':
 			const mercuryGeometry = new THREE.SphereGeometry( 4880 );
-			const mercuryTexture = new THREE.TextureLoader().load('../assets/mercury.jpg');
+			textures.mercury.colorSpace = THREE.SRGBColorSpace;
 			const mercuryMaterial = new THREE.MeshStandardMaterial({
-				map: mercuryTexture, 
+				map: textures.mercury, 
 			})
 			return new THREE.Mesh(mercuryGeometry, mercuryMaterial);
 
 		case 'Venus':
 			const venusGeometry = new THREE.SphereGeometry( 12104 );
-			const venusTexture = new THREE.TextureLoader().load('../assets/venus.jpg');
+			textures.venus.colorSpace = THREE.SRGBColorSpace;
 			const venusMaterial = new THREE.MeshStandardMaterial({
-				map: venusTexture, 
+				map: textures.venus, 
 			})
 			return new THREE.Mesh(venusGeometry, venusMaterial);
 
 		case 'Earth':
 			const earthGeometry = new THREE.SphereGeometry( 12756 );
-			const earthTexture = new THREE.TextureLoader().load('../assets/earth.jpg');
+			textures.earth.colorSpace = THREE.SRGBColorSpace;
 			const earthMaterial = new THREE.MeshStandardMaterial({
-				map: earthTexture, 
+				map: textures.earth, 
 			})
 			return new THREE.Mesh(earthGeometry, earthMaterial);
 
 		case 'Mars':
 			const marsGeometry = new THREE.SphereGeometry( 6792 );
-			const marsTexture = new THREE.TextureLoader().load('../assets/mars.jpg');
+			textures.mars.colorSpace = THREE.SRGBColorSpace;
 			const marsMaterial = new THREE.MeshStandardMaterial({
-				map: marsTexture, 
+				map: textures.mars, 
 			})
 			return new THREE.Mesh(marsGeometry, marsMaterial);
 
 		case 'Jupiter':
 			const jupiterGeometry = new THREE.SphereGeometry( 142984 );
-			const jupiterTexture = new THREE.TextureLoader().load('../assets/jupiter.jpg');
+			textures.jupiter.colorSpace = THREE.SRGBColorSpace;
 			const jupiterMaterial = new THREE.MeshStandardMaterial({
-				map: jupiterTexture, 
+				map: textures.jupiter, 
 			})
 			return new THREE.Mesh(jupiterGeometry, jupiterMaterial);
 
 		case 'Saturn':
 			const saturnGeometry = new THREE.SphereGeometry( 120536 );
-			const saturnTexture = new THREE.TextureLoader().load('../assets/saturn.jpg');
+			textures.saturn.colorSpace = THREE.SRGBColorSpace;
 			const saturnMaterial = new THREE.MeshStandardMaterial({
-				map: saturnTexture, 
+				map: textures.saturn, 
 			})
 			return new THREE.Mesh(saturnGeometry, saturnMaterial);
 
 		case 'Uranus':
 			const uranusGeometry = new THREE.SphereGeometry( 51118 );
-			const uranusTexture = new THREE.TextureLoader().load('../assets/uranus.jpg');
+			textures.uranus.colorSpace = THREE.SRGBColorSpace;
 			const uranusMaterial = new THREE.MeshStandardMaterial({
-				map: uranusTexture, 
+				map: textures.uranus, 
 			})
 			return new THREE.Mesh(uranusGeometry, uranusMaterial);
 
 		case 'Neptune':
-			// const neptuneGeometry = new THREE.SphereGeometry( 49528 );
-			// const neptuneTexture = new THREE.TextureLoader().load('../assets/neptune.jpg');
-			// const neptuneMaterial = new THREE.MeshStandardMaterial({
-			// 	map: neptuneTexture, 
-			// })
-			// return new THREE.Mesh(neptuneGeometry, neptuneMaterial);
-
-		case 'Sun':
-
-
-		// Satellite
-		default:
 			const neptuneGeometry = new THREE.SphereGeometry( 49528 );
-			const neptuneTexture = new THREE.TextureLoader().load('https://images.pexels.com/photos/229789/pexels-photo-229789.jpeg');
-			
 			textures.neptune.colorSpace = THREE.SRGBColorSpace;
-			neptuneTexture.colorSpace = THREE.SRGBColorSpace;
-
 			const neptuneMaterial = new THREE.MeshBasicMaterial({
 				map: textures.neptune,
 			})
-
-			// const AAAA = new THREE.MeshBasicMaterial({
-			// 	color: "#ffffff"
-			// });
 			return new THREE.Mesh(neptuneGeometry, neptuneMaterial);
-			// const geometry = new THREE.SphereGeometry( 95508 );
-			// const material = new THREE.MeshStandardMaterial;
-			// return new THREE.Mesh( geometry, material );
+
+		case 'Sun':
+			// const sunGeometry = new THREE.SphereGeometry( 100000 );
+			// textures.neptune.colorSpace = THREE.SRGBColorSpace;
+			// const neptuneMaterial = new THREE.MeshBasicMaterial({
+			// 	map: textures.neptune,
+			// })
+			// return new THREE.Mesh(neptuneGeometry, neptuneMaterial);
+
+		// Satellite
+		default:
+			const geometry = new THREE.SphereGeometry( 95508 );
+			const material = new THREE.MeshStandardMaterial;
+			return new THREE.Mesh( geometry, material );
 	}
 	
 }
