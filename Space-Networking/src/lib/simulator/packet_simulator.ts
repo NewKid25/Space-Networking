@@ -58,12 +58,18 @@ class Packet_Simulator{
             //send packet from sender to reciever
             let dir : Position
             let arrival_time: number
-            const dir_and_arrival_time = this.get_direction_for_packet_send(connection, this.current_time) //does not yet work(probably)
-            console.log("Direction:", dir_and_arrival_time.vector, )
+            const dir_and_arrival_time = this.get_direction_for_packet_send(connection, this.current_time)
+            // console.log("Direction:", dir_and_arrival_time.vector, "Time:", dir_and_arrival_time.time)
+            // console.log("Connection:", connection)
+
             dir = dir_and_arrival_time.vector;
             arrival_time = dir_and_arrival_time.time;
+            
             this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender, this.current_time, arrival_time))
-
+            // console.log("Time:",  this.current_time, "Packets in flight:", this.packets_in_flight)
+            // if (this.current_time == 100) {
+            //     throw new Error()
+            // }
         }
         this.update_packets_in_flight()  
 
@@ -77,7 +83,7 @@ class Packet_Simulator{
         
         let arrived_packets : Packet_In_Flight[] =[];
         [this.packets_in_flight, arrived_packets] = this.split_packets_in_flight_by_arrival(this.packets_in_flight)
-
+        // console.log("Arrived_packets:", arrived_packets)
         
 
         for(const packet_in_flight of this.packets_in_flight)
@@ -96,7 +102,8 @@ class Packet_Simulator{
             {
                 if (packets_in_flight[i].arrival_timestep > this.current_time)//found first entry that has not arrived
                 {
-                    packets_in_transit =packets_in_flight.slice(i)
+                    packets_in_transit = packets_in_flight.slice(0, i + 1)
+                    // console.log("After slice:", packets_in_transit)
                     break;
                 }
                 arrived_packets.push(packets_in_flight[i])
@@ -113,6 +120,8 @@ class Packet_Simulator{
 
         if (B instanceof Orbiter) {
             let O : SpaceBody = B.parentBody;
+
+            // console.log("A:", A.pos[t], "B:", B.pos[t], "O:", O.pos[t])
 
             const result = interceptFromCartesian({
             A: { x: A.pos[t].x, y: A.pos[t].y },
@@ -131,10 +140,11 @@ class Packet_Simulator{
             }
         }
         else {
+            // console.log("A:", A.pos[t], "B:", B.pos[t])
             const dx = B.pos[t].x - A.pos[t].x;
             const dy = B.pos[t].y - A.pos[t].y;
             const distance = Math.hypot(dx, dy);
-            const time = distance /c;
+            const time = distance / c;
             return {
                 vector: new Position(dx / distance, dy / distance),
                 time: time                

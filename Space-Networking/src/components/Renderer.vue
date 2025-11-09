@@ -56,6 +56,11 @@ var renderer : THREE.WebGLRenderer;
 
 const rendererElement = useTemplateRef("rendererElement");
 
+const INITIAL_ZOOM = 0.0009
+const ZOOM_INCREMENT = 0.00005
+
+const DRAG_SCALE = 1500;
+
 // Make this visible to parents
 defineExpose({
 	spaceBodies,
@@ -88,10 +93,48 @@ onMounted(() => {
 		const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 		scene.add( light );
 
-		camera.zoom = .0003;
+		camera.zoom = INITIAL_ZOOM;
 		camera.updateProjectionMatrix();
 
 		renderer.render( scene, camera );
+
+		// Scroll wheel event listener:  Zooming
+		rendererElement.value.addEventListener("wheel", (e) => {
+			if (e.deltaY < 0) {
+				console.log(e.deltaY);
+				camera.zoom += ZOOM_INCREMENT;
+				camera.updateProjectionMatrix();
+
+				renderFrame();
+
+			}
+
+			if (e.deltaY > 0) {
+				console.log(e.deltaY);
+				camera.zoom -= ZOOM_INCREMENT;
+				camera.updateProjectionMatrix();
+
+				renderFrame();
+			}
+		})
+
+		// Mouse move event listener:  Dragging viewport
+		rendererElement.value.addEventListener("mousemove", (e) => {
+			// if mouse button down
+			if (Boolean(e.buttons & (1))) {
+				console.log(e.movementX);
+
+				camera.left -= e.movementX * DRAG_SCALE;
+				camera.right -= e.movementX * DRAG_SCALE;
+
+				camera.top -= e.movementY * DRAG_SCALE;
+				camera.bottom -= e.movementY * DRAG_SCALE;
+
+				camera.updateProjectionMatrix();
+
+				renderFrame();
+			}
+		})
 	}
 });
 
@@ -199,6 +242,8 @@ function renderFrame() {
 
 	renderer.render( scene, camera );
 }
+
+
 
 </script>
 

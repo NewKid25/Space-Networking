@@ -36,7 +36,7 @@ class Sender {
             if (randomNum < LOSS_RATE) {
                 drop = true;
             }
-            packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.buffer[this.next_packet_index],  arrival_timestep, drop)
+            packet_in_flight = new Packet_In_Flight(sender.pos[current_time], direction, this.buffer.data[this.next_packet_index],  arrival_timestep, drop)
         }
 
         this.next_packet_index ++;
