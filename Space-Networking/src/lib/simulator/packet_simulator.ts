@@ -30,7 +30,9 @@ class Packet_Simulator{
         {
             if(i % this.network_rescan_time == 0)
             {
-                
+                // //check for current senders (each sender in all connections)
+                // path = create_new_connections()
+                // next hop
             }
             all_packets[i] = this.Packet_Sim_Update()
             this.current_time ++;
@@ -57,6 +59,7 @@ class Packet_Simulator{
             let dir : Position
             let arrival_time: number
             const dir_and_arrival_time = this.get_direction_for_packet_send(connection, this.current_time) //does not yet work(probably)
+            console.log("Direction:", dir_and_arrival_time.vector, )
             dir = dir_and_arrival_time.vector;
             arrival_time = dir_and_arrival_time.time;
             this.packets_in_flight.push(connection.sender.sender.send_packet(dir, connection.sender, this.current_time, arrival_time))
@@ -74,6 +77,8 @@ class Packet_Simulator{
         
         let arrived_packets : Packet_In_Flight[] =[];
         [this.packets_in_flight, arrived_packets] = this.split_packets_in_flight_by_arrival(this.packets_in_flight)
+
+        
 
         for(const packet_in_flight of this.packets_in_flight)
         {
@@ -137,7 +142,34 @@ class Packet_Simulator{
         }
     }
 
+
+
+    create_path() //source:SpaceBody
+    {
+        
+        //sorted araay on x
+        //sorted array on y
+
+        // while closest != terminal
+            //current node = soucre
+            //while (path not complete???)
+                //closest = check neighbors (node)
+                //create communication (source closest)
+
+    }    
+
+    check_neighbors()
+    {
+        //for each neighbor
+            //check distance
+                //source neight.pos-source.pos 
+
+        //return closest
+    }
 }
+
+
+
 
 export default Packet_Simulator
 
