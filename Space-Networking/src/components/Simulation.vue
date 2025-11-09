@@ -15,10 +15,13 @@ const SIM_SECONDS_PER_FRAME = 100;
 const rendererElement = useTemplateRef("rendererElement")
 
 let sun = new SpaceBody(1, "Sun", [new Position(0, 0)])
-let earth = new Orbiter(2, "Earth", 200000, "Sun", sun)
-let satellite = new Orbiter(3, "DA MOOOOON", 50000, "Earth", earth)
+let mercury = new Orbiter(2, "Mercury", DISTANCE_FROM_SUN.get("Mercury") ?? 0, "Sun", sun)
+let venus = new Orbiter(3, "Venus", DISTANCE_FROM_SUN.get("Venus") ?? 0, "Sun", sun)
+let earth = new Orbiter(4, "Earth", DISTANCE_FROM_SUN.get("Earth") ?? 0, "Sun", sun)
+let mars = new Orbiter(5, "Mars", DISTANCE_FROM_SUN.get("Mars") ?? 0, "Sun", sun)
+let satellite = new Orbiter(6, "Satellite", 150000, "Satellite", mercury)
 
-let two_bodies = [sun, earth, satellite]
+let two_bodies = [sun, mercury, venus, earth, mars, satellite]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
 let engine = new Simulator_Engine(two_bodies, 100000)
