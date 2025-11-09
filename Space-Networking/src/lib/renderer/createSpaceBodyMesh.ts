@@ -1,9 +1,11 @@
 import type SpaceBody from "../renderer/definitions/spaceBody";
 import * as THREE from 'three';
 
+import neptuneImgSrc from "../assets/neptune.jpg"
+
 const textures = {
 	"mercury": new THREE.TextureLoader().load('../assets/mercury.jpg'),
-	"neptune": new THREE.TextureLoader().load('https://images.pexels.com/photos/229789/pexels-photo-229789.jpeg')
+	"neptune": new THREE.TextureLoader().load(neptuneImgSrc)
 }
 
 export default function createSpaceBodyMesh(spaceBody : SpaceBody) {
