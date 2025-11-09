@@ -4,6 +4,7 @@ import Position from './definitions/position'
 import Packet_In_Flight from './definitions/packet_in_flight'
 import SpaceBody from './definitions/space_body'
 import { interceptFromCartesian } from './definitions/types'
+import Oribiter from './definitions/orbiter'
 import Simulator_Engine from './simulator_engine'
 
 class Packet_Simulator{
@@ -60,49 +61,45 @@ class Packet_Simulator{
             // if (rand) drop packet
             //move along vector as speed of light
 
-    get_direction_for_packet_send(conn: Connection)
+    get_direction_for_packet_send(conn: Connection, t: number)
     {
         let A : SpaceBody = conn.sender;
         let B : SpaceBody = conn.receiver;
 
-        const result = interceptFromCartesian({
-            A: { x: 0, y: 0 },           // Station
-            O: { x: 4000, y: 0 },        // Planet center
-            B: { x: 4000 + 7000 * Math.cos(Math.PI / 4), 
-                y: 7000 * Math.sin(Math.PI / 4) }, // Orbiter position
-            r: 7000,
-            vo: 2000,
-            vl: 3000
+        const c = 299_792.458; // km/s
+
+        if (B instanceof Oribiter) {
+            let O : SpaceBody = B.parentBody;
+
+            const result = interceptFromCartesian({
+            A: { x: A.pos[t].x, y: A.pos[t].y },
+            O: { x: O.pos[t].x, y: O.pos[t].y },
+            B: { x: B.pos[t].x, y: B.pos[t].y },
+            r: B.orbitRadius,
+            vo: B.velocity,          // km/s (example orbital velocity)
+            vl: c,
             });
 
             if (result.ok) {
-            console.log("θ₀ (auto):", result.thetaHit);
-            console.log("Distance:", result.distance);
-            console.log("Intercept time:", result.time);
-            } else {
-            console.error(result.message);
-            }
-
-        return new Position(1,0)
-    }
-
-    
-    split_packets_in_flight_by_arrival(packets_in_flight:Packet_In_Flight[]):[Packet_In_Flight[], Packet_In_Flight[]]
-    {
-        let arrived_packets : Packet_In_Flight[] =[]
-        let packets_in_transit : Packet_In_Flight[] =[]
-        
-        for(let i = packets_in_flight.length; i>=0; i--)
-            {
-                if (packets_in_flight[i].arrival_timestep > Simulator_Engine.current_time)//found first entry that has not arrived
-                {
-                    packets_in_transit =packets_in_flight.slice(i)
-                    break;
+                return {
+                    vector: new Position(result.x / result.distance, result.y / result.distance),
+                    time: result.time
                 }
-                arrived_packets.push(packets_in_flight[i])
             }
-            return [packets_in_transit, arrived_packets]
+        }
+        else {
+            const dx = B.pos[t].x - A.pos[t].x;
+            const dy = B.pos[t].y - A.pos[t].y;
+            const distance = Math.hypot(dx, dy);
+            const time = distance /c;
+            return {
+                vector: new Position(dx / distance, dy / distance),
+                time: time                
+            }
+        }
     }
+
 }
+
 export default Packet_Simulator
 
