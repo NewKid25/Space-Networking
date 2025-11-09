@@ -29,7 +29,8 @@ const rendererElement = useTemplateRef("rendererElement");
 defineExpose({
 	spaceBodies,
 	packets,
-	droppedPackets
+	droppedPackets,
+	renderFrame
 });
 
 // When this component is loaded, create the three.js
@@ -101,6 +102,10 @@ watch(spaceBodies, (newSpaceBodies) => {
 
 	setTimeout(() => {renderer.render(scene, camera)},500);
 });
+
+function renderFrame() {
+	renderer.render( scene, camera );
+}
 
 </script>
 

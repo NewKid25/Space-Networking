@@ -1,6 +1,10 @@
 import type SpaceBody from "../renderer/definitions/spaceBody";
 import * as THREE from 'three';
 
+const textures = {
+	"mercury": new THREE.TextureLoader().load('../assets/mercury.jpg'),
+	"neptune": new THREE.TextureLoader().load('https://images.pexels.com/photos/229789/pexels-photo-229789.jpeg')
+}
 
 export default function createSpaceBodyMesh(spaceBody : SpaceBody) {
 
@@ -76,12 +80,18 @@ export default function createSpaceBodyMesh(spaceBody : SpaceBody) {
 		// Satellite
 		default:
 			const neptuneGeometry = new THREE.SphereGeometry( 49528 );
-			const neptuneTexture = new THREE.TextureLoader().load('https://media.istockphoto.com/id/814423752/photo/eye-of-model-with-colorful-art-make-up-close-up.jpg?s=612x612&w=0&k=20&c=l15OdMWjgCKycMMShP8UK94ELVlEGvt7GmB_esHWPYE=');
+			const neptuneTexture = new THREE.TextureLoader().load('https://images.pexels.com/photos/229789/pexels-photo-229789.jpeg');
+			
+			textures.neptune.colorSpace = THREE.SRGBColorSpace;
 			neptuneTexture.colorSpace = THREE.SRGBColorSpace;
 
-			const neptuneMaterial = new THREE.MeshStandardMaterial({
-				map: neptuneTexture, 
+			const neptuneMaterial = new THREE.MeshBasicMaterial({
+				map: textures.neptune,
 			})
+
+			// const AAAA = new THREE.MeshBasicMaterial({
+			// 	color: "#ffffff"
+			// });
 			return new THREE.Mesh(neptuneGeometry, neptuneMaterial);
 			// const geometry = new THREE.SphereGeometry( 95508 );
 			// const material = new THREE.MeshStandardMaterial;

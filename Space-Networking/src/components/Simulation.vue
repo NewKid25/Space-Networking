@@ -18,7 +18,7 @@ let earth = new Orbiter(2, "Earth", 200000, "Sun", sun)
 let satellite = new Orbiter(3, "DA MOOOOON", 50000, "Earth", earth)
 
 let two_bodies = [sun, earth, satellite]
-let kSim = new KineticSim(two_bodies, 100000)
+let kSim = new KineticSim(two_bodies, 1000000)
 kSim.calculate_all_positions();
 
 let currentTime = 0;
@@ -36,11 +36,13 @@ onMounted(() => {
 				}
 			});
 
-			if (currentTime < 100000) {
+			if (currentTime < 1000000) {
 				currentTime += SIM_SECONDS_PER_FRAME;
 			}
+
+			rendererElement.value.renderFrame();
 		}
-	}, 0);
+	}, 100);
 
 	
 
