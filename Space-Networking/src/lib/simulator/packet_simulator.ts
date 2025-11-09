@@ -4,6 +4,7 @@ import Packet_In_Flight from './definitions/packet_in_flight'
 import SpaceBody from './definitions/space_body'
 import { interceptFromCartesian } from './definitions/types'
 import Orbiter from './definitions/orbiter'
+import {get_distance} from './ultility'
 // import Simulator_Engine from './simulator_engine'
 
 class Packet_Simulator{
@@ -11,23 +12,30 @@ class Packet_Simulator{
     connections : Connection[] = []
     packets_in_flight : Packet_In_Flight[] = []
 
+    bodies: SpaceBody[] =[]
+
     current_time:number = 0;
     total_time:number;
-    bodies:Array<SpaceBody>;
+    sending_bodies = {
+        sorted_on_x: [] as SpaceBody[],
+        sorted_on_y: [] as SpaceBody[]
+    };
 
     source: SpaceBody;
     destination: SpaceBody;
-    number_of_packets: number;
-    
-    network_rescan_time = 100;
+    number_of_packets: number = 100;
 
-    constructor(total_time:number, src: SpaceBody, dst: SpaceBody, num_packs: number, bodies: Array<SpaceBody>)
+    
+    network_rescan_time = 100; //CONSTANT THAT USER SHOULD BE ABLE TO SET
+
+    constructor(total_time:number, bodies:SpaceBody[], destination: SpaceBody, source: SpaceBody)
     {
-        this.total_time = total_time;
-        this.source = src;
-        this.destination = dst;
-        this.number_of_packets = num_packs;
-        this.bodies = bodies;
+        this.total_time =total_time;
+        //note that this is not sorted at the start we have to sort each time we use this anyway
+        this.sending_bodies.sorted_on_x = bodies.filter((body)=>body.sender != null)
+        this.sending_bodies.sorted_on_y = this.sending_bodies.sorted_on_x
+        this.destination = destination
+        this.source = source
     }
 
     calculate_all_positions()
@@ -36,11 +44,12 @@ class Packet_Simulator{
 
         for(let i =0; i<= this.total_time; i++)
         {
+            console.log("time", i)
+            console.log("connections", this.connections)
             if(i % this.network_rescan_time == 0)
             {
-                // //check for current senders (each sender in all connections)
-                // path = create_new_connections()
-                // next hop
+                console.log("rescanning...")
+                this.scan_for_path()
             }
             all_packets[i] = this.Packet_Sim_Update()
             this.current_time ++;
@@ -55,6 +64,12 @@ class Packet_Simulator{
             //establish connection
             this.connections.push(new Connection(sender, receiver))
         }
+    }
+
+    end_stream(connection_index:number)
+    {
+        // connection.sender.stop_sending()
+        this.connections.splice(connection_index,1) // remove connection from list 
     }
 
 
@@ -181,28 +196,89 @@ class Packet_Simulator{
 
 
 
-    create_path() //source:SpaceBody
+    scan_for_path() //source:SpaceBody
     {
-        
-        //sorted araay on x
-        //sorted array on y
 
-        // while closest != terminal
-            //current node = soucre
-            //while (path not complete???)
-                //closest = check neighbors (node)
-                //create communication (source closest)
+        if (this.connections.length > 0)
+        {
+            for(let i=0; i<this.connections.length;i++) //look at every reciever
+            {
+                let is_also_sender = false
+                for(let j = 0; j < this.connections.length; i++)
+                {
+                    if(this.connections[i]?.receiver.id == this.connections[i]?.sender.id)
+                    {
+                        is_also_sender = true
+                        break;
+                    }
+                }
+                if(is_also_sender ==false && this.connections[i]?.receiver.id != this.destination.id)
+                {
+                    const nearest_neighbor = this.find_nearest_neighbor(this.connections[i]?.receiver!)
+                    this.start_stream(this.connections[i]!.receiver, nearest_neighbor!)
+
+                }
+            }
+
+            for(let i=0; i<this.connections.length;i++)
+            {
+                const nearest_neighbor =  this.find_nearest_neighbor(this.connections[i]!.sender)
+                if(this.connections[i]!.receiver != nearest_neighbor)
+                {
+                    this.end_stream(i)
+                    this.start_stream(this.connections[i]!.sender, nearest_neighbor!)
+                }
+            }
+        }
+        else // no connections
+        {
+            const nearest_neighbor =  this.find_nearest_neighbor(this.source)
+            this.start_stream(this.source, nearest_neighbor!)
+        }
+       
 
     }    
 
-    check_neighbors()
+    find_nearest_neighbor(key_body:SpaceBody)
     {
-        //for each neighbor
-            //check distance
-                //source neight.pos-source.pos 
+        //should probably do binary search but dont want to implement
+        console.log("x array",this.sending_bodies.sorted_on_x)
+        console.log("y array",this.sending_bodies.sorted_on_y)
+        
+        const x_index = this.sending_bodies.sorted_on_x.findIndex((body)=>body.id == key_body.id)
+        const y_index = this.sending_bodies.sorted_on_y.findIndex((body)=>body.id == key_body.id)
 
-        //return closest
+        let neighbors:SpaceBody[] = []
+
+        neighbors.push(this.sending_bodies.sorted_on_x[x_index-1]!)
+        neighbors.push(this.sending_bodies.sorted_on_x[x_index+1]!)
+        neighbors.push(this.sending_bodies.sorted_on_y[y_index-1]!)
+        neighbors.push(this.sending_bodies.sorted_on_y[y_index+1]!)
+
+        let shortest_distance = 10**12 //shitty number
+        let closest_neighbor:SpaceBody | undefined = undefined; //shouldnt be undefined though
+
+        for(const neighbor of neighbors)
+        {
+            console.log("key_body", key_body)
+            console.log("neighbor", neighbor)
+            let temp_dist = get_distance(key_body.pos[this.current_time]!,neighbor.pos[this.current_time]!)
+            if(temp_dist <shortest_distance)
+            {
+                closest_neighbor = neighbor
+                shortest_distance = temp_dist
+            }
+        }
+
+        return closest_neighbor;
     }
+
+    resort_sending_bodies()
+    {
+        this.sending_bodies.sorted_on_x = this.sending_bodies.sorted_on_x.sort((A, B)=> A.pos[this.current_time]!.x - B.pos[this.current_time]!.x)
+        this.sending_bodies.sorted_on_y = this.sending_bodies.sorted_on_y.sort((A, B)=> A.pos[this.current_time]!.y - B.pos[this.current_time]!.y)
+    }
+            
 }
 
 
