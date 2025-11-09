@@ -109,7 +109,6 @@ onMounted(() => {
 </script>
 
 <template>
-	<p>Hello</p>
 	<Renderer :initial-space-bodies="[]" ref="rendererElement"> </Renderer>
 	<input type="range" v-if="Array.isArray(props.simSec)" :min="props.simSec[0]" :max="props.simSec[1]" v-model="SIM_SECONDS_PER_FRAME"></input>
 	<slot> <!-- Other controls go here --> </slot>
