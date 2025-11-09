@@ -22,7 +22,7 @@ let two_bodies = [sun, earth, satellite]
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
 let engine = new Simulator_Engine(two_bodies, 100000)
-engine.calculate_all_positions
+engine.calculate_all_positions();
 
 
 let currentTime = 0;
@@ -31,6 +31,7 @@ onMounted(() => {
 
 	setInterval(() => {
 		if (rendererElement.value != null) {
+
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
 				let kPos = kBody.pos[currentTime];
 				

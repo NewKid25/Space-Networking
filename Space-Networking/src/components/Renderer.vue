@@ -43,7 +43,7 @@ onMounted(() => {
 		camera = new THREE.OrthographicCamera( -rendererElement.value.clientWidth, rendererElement.value.clientWidth, -rendererElement.value.clientHeight, rendererElement.value.clientHeight, 0, 1000000)
 
 
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({antialias: true});
 		renderer.setSize( rendererElement.value.offsetWidth, rendererElement.value.offsetHeight );
 		rendererElement.value.appendChild( renderer.domElement );
 
@@ -57,7 +57,7 @@ onMounted(() => {
 		const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 		scene.add( light );
 
-		camera.zoom = .0004;
+		camera.zoom = .0009;
 		camera.updateProjectionMatrix();
 
 		renderer.render( scene, camera );

@@ -100,7 +100,7 @@ export default function createSpaceBodyMesh(spaceBody : SpaceBody) {
 		// Satellite
 		default:
 			const geometry = new THREE.SphereGeometry( 95508 );
-			const material = new THREE.MeshStandardMaterial;
+			const material = new THREE.MeshStandardMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
 			return new THREE.Mesh( geometry, material );
 	}
 	
