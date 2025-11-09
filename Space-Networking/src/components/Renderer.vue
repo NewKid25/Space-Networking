@@ -56,7 +56,7 @@ onMounted(() => {
 		const light = new THREE.AmbientLight( 0x404040, 20 ); // soft white light
 		scene.add( light );
 
-		camera.zoom = .0001;
+		camera.zoom = .0004;
 		camera.updateProjectionMatrix();
 
 		renderer.render( scene, camera );
