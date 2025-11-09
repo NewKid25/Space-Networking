@@ -16,6 +16,7 @@ export type RenderSpaceBody = {
   orbitCenterName?: string;
 };
 
+
 function createOrbitLine(
   radius: number,
   center: THREE.Vector3,
@@ -43,9 +44,15 @@ function createOrbitLine(
   return new THREE.LineLoop(geometry, material);
 }
 
-const props = defineProps<{
-	initialSpaceBodies: RenderSpaceBody[]
-}>();
+interface Props {
+	initialSpaceBodies: RenderSpaceBody[],
+	elemWidth: string,
+	elemHeight: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	elemWidth: '500px', elemHeight: '500px'
+})
 
 
 const spaceBodies : Ref<RenderSpaceBody[]> = ref(props.initialSpaceBodies);
@@ -326,7 +333,7 @@ function renderFrame() {
 
 <style scoped>
 	div {
-		width: 500px;
-		height: 500px;
+		width: v-bind(elemWidth);
+		height:  v-bind(elemHeight);
 	}
 </style>

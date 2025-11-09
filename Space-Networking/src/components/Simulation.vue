@@ -17,17 +17,25 @@ import type { RenderSpaceBody } from './Renderer.vue';
 
 import { TestDataScenario, SimpleLineScenario } from '@/lib/simulator/scenarios/index';
 
-const SIM_SECONDS_PER_FRAME = 10;
+var SIM_SECONDS_PER_FRAME = 10;
 
 const rendererElement = useTemplateRef("rendererElement")
 
-const props = defineProps<{
+interface Props {
 	setup?: SpaceBody[];
-}>();
+	elemWidth?: string;
+	elemHeight?: string;
+	simSec?: number;
+	maxSecondsSim?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	elemWidth: '500px', elemHeight: '500px', maxSecondsSim: 1000000
+});
 
 const simBodies: SpaceBody[] = props.setup ?? TestDataScenario;
 
-const engine = new Simulator_Engine(simBodies, 100000)
+const engine = new Simulator_Engine(simBodies, props.maxSecondsSim)
 // let kSim = new KineticSim(two_bodies, 100000)
 // kSim.calculate_all_positions();
 
@@ -45,6 +53,8 @@ engine.calculate_all_positions();
 let currentTime = 0;
 
 onMounted(() => {
+	SIM_SECONDS_PER_FRAME = props.simSec;
+
 	setInterval(() => {
 		if (!rendererElement.value) return;
 			rendererElement.value.spaceBodies = engine.bodies.map((kBody) => {
