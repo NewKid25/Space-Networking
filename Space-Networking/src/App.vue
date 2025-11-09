@@ -22,7 +22,7 @@ import ScenariosTab from "./components/ScenariosTab.vue";
   <div id="header">
     <h1>Packets in space</h1>
   </div>
-  <Tabs value="0">
+  <Tabs value="1">
     <TabList>
       <Tab value="0">Learn</Tab>
       <Tab value="1">Explore</Tab>
@@ -38,4 +38,3 @@ import ScenariosTab from "./components/ScenariosTab.vue";
   </Tabs>
 </template>
 
-<style scoped></style>

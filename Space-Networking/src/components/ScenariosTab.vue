@@ -19,7 +19,7 @@ const scenarioModules = {
 	</select>
 
 	<Simulation :setup="SimpleLineScenario" v-if="selection == 'Simple Line'"></Simulation>
-	<Simulation :setup="TestDataScenario" v-if="selection == 'Test Data'"></Simulation>
+	<Simulation :setup="TestDataScenario" v-if="selection == 'Test Data'" :max-seconds-sim="1000" :sim-sec="1"></Simulation>
 
 
 </template>

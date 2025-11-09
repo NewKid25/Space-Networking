@@ -16,6 +16,7 @@ import Sender_Buffer from '@/lib/simulator/definitions/sender_buffer';
 import type { RenderSpaceBody } from './Renderer.vue';
 
 import { TestDataScenario, SimpleLineScenario } from '@/lib/simulator/scenarios/index';
+import { notEqual } from 'three/src/nodes/TSL.js';
 
 var SIM_SECONDS_PER_FRAME = 10;
 
@@ -30,10 +31,19 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	elemWidth: '500px', elemHeight: '500px', maxSecondsSim: 500000
+	elemWidth: '500px', elemHeight: '500px', maxSecondsSim: 1000
 });
 
 const simBodies: SpaceBody[] = props.setup ?? TestDataScenario;
+
+for (const body of simBodies) {
+	if (body.name == "Satellite") {
+		console.log("correctly attached")
+		body.attach_sender(true);
+	}
+	
+}
+// throw notEqual
 
 const earth = simBodies.find((b) => b.name === "Earth");
 const mars = simBodies.find((b) => b.name === "Mars");
@@ -90,7 +100,7 @@ onMounted(() => {
 			} else {
 				currentTime = 0;
 			}
-			console.log(currentTime, SIM_SECONDS_PER_FRAME);
+			// console.log(currentTime, SIM_SECONDS_PER_FRAME);
 
 			rendererElement.value.renderFrame();
 	}, 100);

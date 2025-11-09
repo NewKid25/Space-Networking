@@ -7,7 +7,7 @@ const MARS_RADIUS = 6792 * 3;
 const SAT_RADIUS = 8000;
 
 
-const GAP = 60000;
+const GAP = 90000;
 
 const radii = [EARTH_RADIUS, SAT_RADIUS, SAT_RADIUS, SAT_RADIUS, MARS_RADIUS];
 
@@ -28,5 +28,6 @@ const sat1  = new SpaceBody(2, "Satellite", [new Position(centers[1], 0)]);
 const sat2  = new SpaceBody(3, "Satellite", [new Position(centers[2], 0)]);
 const sat3  = new SpaceBody(4, "Satellite", [new Position(centers[3], 0)]);
 const mars  = new SpaceBody(5, "Mars", [new Position(centers[4], 0)]);
+
 
 export const SimpleLineScenario: SpaceBody[] = [earth, sat1, sat2, sat3, mars];

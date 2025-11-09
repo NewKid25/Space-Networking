@@ -2,10 +2,12 @@ import Packet_In_Flight from './definitions/packet_in_flight'
 import Packet_Simulator from './packet_simulator';
 import SpaceBody from './definitions/space_body';
 import KineticSim from './kinetic_simulator';
+import { LIGHT_SPEED } from './constants';
 
 export default class Simulator_Engine
 {
     packet_simulator:Packet_Simulator |undefined = undefined; 
+
     kinetic_simulator: KineticSim;
     
     packets_in_flight : [Packet_In_Flight[]] = [[]]
@@ -28,7 +30,7 @@ export default class Simulator_Engine
         this.destination.attach_sender(true)
         this.number_of_packets = num_packs;
         this.packet_simulator = new Packet_Simulator(this.total_time, this.bodies, this.destination, this.source, num_packs)
-        
+
     }
     
     calculate_all_positions()
@@ -56,5 +58,6 @@ export default class Simulator_Engine
     {
         return this.packets_in_flight[time]
     }
+
 }
 

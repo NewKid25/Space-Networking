@@ -5,6 +5,8 @@ import SpaceBody from './definitions/space_body'
 import { interceptFromCartesian } from './definitions/types'
 import Orbiter from './definitions/orbiter'
 import {get_distance} from './ultility'
+import { LIGHT_SPEED } from './constants'
+import { log } from 'three'
 // import Simulator_Engine from './simulator_engine'
 
 class Packet_Simulator{
@@ -35,6 +37,10 @@ class Packet_Simulator{
         this.destination = destination
         this.source = source
         this.number_of_packets =packet_number
+
+        console.log("src", this.source)
+        console.log("dst", this.destination)
+
     }
 
     calculate_all_positions()
@@ -43,6 +49,9 @@ class Packet_Simulator{
 
         for(let i =0; i<= this.total_time; i++)
         {
+            console.log("Time",this.current_time)
+            console.log("connections", this.connections)
+            console.log("Packets", this.packets_in_flight)
             if(i % this.network_rescan_time == 0)
             {
                 this.scan_for_path()
@@ -159,7 +168,7 @@ class Packet_Simulator{
         let A : SpaceBody = conn.sender;
         let B : SpaceBody = conn.receiver;
 
-        const c = 299_792.458; // km/s
+        const c = LIGHT_SPEED; // km/s
 
         if (B instanceof Orbiter) {
             let O : SpaceBody = B.parentBody;

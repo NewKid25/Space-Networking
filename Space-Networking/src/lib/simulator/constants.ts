@@ -22,5 +22,5 @@ export const GM_CONSTANTS: Map<string, number> = new Map([
     ['Neptune', 6836527.10058]
 ])
 
-export const LIGHT_SPEED =  299792 //km/s
+export var LIGHT_SPEED =  2997 //km/s
 export const LOSS_RATE = 0.01
