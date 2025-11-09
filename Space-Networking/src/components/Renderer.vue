@@ -28,6 +28,8 @@ const rendererElement = useTemplateRef("rendererElement");
 const INITIAL_ZOOM = 0.0009
 const ZOOM_INCREMENT = 0.00005
 
+const DRAG_SCALE = 1500;
+
 // Make this visible to parents
 defineExpose({
 	spaceBodies,
@@ -65,6 +67,7 @@ onMounted(() => {
 
 		renderer.render( scene, camera );
 
+		// Scroll wheel event listener:  Zooming
 		rendererElement.value.addEventListener("wheel", (e) => {
 			if (e.deltaY < 0) {
 				console.log(e.deltaY);
@@ -78,6 +81,24 @@ onMounted(() => {
 			if (e.deltaY > 0) {
 				console.log(e.deltaY);
 				camera.zoom -= ZOOM_INCREMENT;
+				camera.updateProjectionMatrix();
+
+				renderFrame();
+			}
+		})
+
+		// Mouse move event listener:  Dragging viewport
+		rendererElement.value.addEventListener("mousemove", (e) => {
+			// if mouse button down
+			if (Boolean(e.buttons & (1))) {
+				console.log(e.movementX);
+
+				camera.left -= e.movementX * DRAG_SCALE;
+				camera.right -= e.movementX * DRAG_SCALE;
+
+				camera.top -= e.movementY * DRAG_SCALE;
+				camera.bottom -= e.movementY * DRAG_SCALE;
+
 				camera.updateProjectionMatrix();
 
 				renderFrame();
